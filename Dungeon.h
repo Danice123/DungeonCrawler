@@ -14,6 +14,7 @@ class Dungeon;
 #include "image.h"
 #include "textDX.h"
 #include "entity.h"
+#include "DungeonGen.h"
 #include <cmath>
 
 //=============================================================================
@@ -40,7 +41,11 @@ private:
 	TextureManager* textures;
 	TextDX text;
 
+	DungeonGen gen;
+	void loadFloor(int);
 	Image** mapImg;
+	int floor;
+	int px, py;
 
 	Entity player;
 };

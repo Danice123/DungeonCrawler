@@ -88,6 +88,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="audio.cpp" />
+    <ClCompile Include="DungeonGen.cpp" />
+    <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="Items.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="entity.cpp" />
@@ -95,12 +98,18 @@
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="textDX.cpp" />
     <ClCompile Include="textureManager.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio.h" />
+    <ClInclude Include="DungeonGen.h" />
+    <ClInclude Include="Floor.h" />
+    <ClInclude Include="ItemInstance.h" />
+    <ClInclude Include="Items.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="constants.h" />
@@ -110,6 +119,10 @@
     <ClInclude Include="graphics.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="Monster.h" />
+    <ClInclude Include="MonsterInstance.h" />
+    <ClInclude Include="OvalRoom.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="textDX.h" />
     <ClInclude Include="textureManager.h" />
   </ItemGroup>
