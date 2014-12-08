@@ -1,7 +1,7 @@
 #include "Dungeon.h"
 
-const std::string images[] = { "img/wall.bmp", "img/floor.bmp", "img/person.png" };
-const int nTextures = 3;
+const std::string images[] = { "img/tiles.png", "img/person.png" };
+const int nTextures = 2;
 
 //=============================================================================
 // Constructor
@@ -19,15 +19,29 @@ Dungeon::~Dungeon()
 }
 
 void Dungeon::loadFloor(int floor) {
-	mapImg = new Image*[gen.getFloor(floor).getHeight()];
-	for (int i = 0; i < gen.getFloor(floor).getHeight(); i++) {
-		mapImg[i] = new Image[gen.getFloor(floor).getWidth()];
-		for (int j = 0; j < gen.getFloor(floor).getWidth(); j++) {
-			mapImg[i][j].initialize(graphics, 0, 0, 0, &textures[gen.getFloor(floor).getTile(j, i)]);
-		}
+	for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
+		for (int j = 0; j < gen.getFloor(floor).getWidth(); j++)
+			switch (gen.getFloor(floor).getTile(j, i)) {
+			case 0:
+				if (i != gen.getFloor(floor).getHeight() - 1 && gen.getFloor(floor).getTile(j, i + 1))
+					mapImg[i][j].setCurrentFrame(1);
+				else
+					mapImg[i][j].setCurrentFrame(0);
+				break;
+			case 1:
+				mapImg[i][j].setCurrentFrame(2);
+				break;
+			case 9:
+				mapImg[i][j].setCurrentFrame(10);
+				break;
+			}
+
+	for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
+		monsters[i].setMonster(&gen.getFloor(floor).getMonsters()[i]);
 	}
 }
 
+#include <time.h>
 //=============================================================================
 // Initializes the game
 // Throws GameError on error
@@ -38,18 +52,37 @@ void Dungeon::initialize(HWND hwnd) {
 		if (!textures[i].initialize(graphics, images[i].c_str())) 
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 	}
+
 	gen.loadMonsters();
 	gen.loadItems();
-	srand(100);
+	srand(time(0));
 	gen.generateRandom(1);
-	for (int i = 0; i < gen.getAmountFloors(); i++) gen.getFloor(i).genFloorLayout();
+
+	int maxHeight = 0;
+	int maxWidth = 0;
+	for (int i = 0; i < gen.getAmountFloors(); i++) {
+		gen.getFloor(i).genFloorLayout();
+		if (maxHeight < gen.getFloor(i).getHeight()) maxHeight = gen.getFloor(i).getHeight();
+		if (maxWidth < gen.getFloor(i).getWidth()) maxWidth = gen.getFloor(i).getWidth();
+	}
+
+	mapImg = new Image*[maxHeight];
+	for (int i = 0; i < maxHeight; i++) {
+		mapImg[i] = new Image[maxWidth];
+		for (int j = 0; j < maxWidth; j++) {
+			mapImg[i][j].initialize(graphics, 32, 32, 10, &textures[0]);
+		}
+	}
+
+	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 0, 0, 0, &textures[1]);
+
 	floor = 0;
 	loadFloor(floor);
 
-	player.initialize(this, 0, 0, 0, &textures[2]);
+	player.initialize(this, 0, 0, 0, &textures[1]);
 
 	player.setX(GAME_WIDTH / 2);
-	player.setY(GAME_HEIGHT / 2);
+	player.setY(GAME_HEIGHT / 2 - 16);
 	px = gen.getFloor(floor).sx;
 	py = gen.getFloor(floor).sy;
 }
@@ -64,19 +97,19 @@ int newY;
 void Dungeon::update()
 {
 	if (input->wasKeyPressed(VK_UP)) {
-		//if (gen.getFloor(0).getTile(px, py - 1) == 0) return;
+		if (gen.getFloor(0).getTile(px, py - 1) == 0) return;
 		py--;
 	}
 	if (input->wasKeyPressed(VK_DOWN)) {
-		//if (gen.getFloor(0).getTile(px, py + 1) == 0) return;
+		if (gen.getFloor(0).getTile(px, py + 1) == 0) return;
 		py++;
 	}
 	if (input->wasKeyPressed(VK_RIGHT)) {
-		//if (gen.getFloor(0).getTile(px + 1, py) == 0) return;
+		if (gen.getFloor(0).getTile(px + 1, py) == 0) return;
 		px++;
 	}
 	if (input->wasKeyPressed(VK_LEFT)) {
-		//if (gen.getFloor(0).getTile(px - 1, py) == 0) return;
+		if (gen.getFloor(0).getTile(px - 1, py) == 0) return;
 		px--;
 	}
 	/*if (!isMoving) {
@@ -137,16 +170,21 @@ void Dungeon::collisions()
 //=============================================================================
 void Dungeon::render()
 {
+	int xoffset = px - GAME_WIDTH / 64;
+	int yoffset = py - GAME_HEIGHT / 64;
 	graphics->spriteBegin();
 	for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
 		for (int j = 0; j < gen.getFloor(floor).getWidth(); j++) {
-			int xoffset = px * 32;
-			int yoffset = py * 32;
-			mapImg[i][j].setX(j * 32 - xoffset - GAME_WIDTH / 2);
-			mapImg[i][j].setY(i * 32 - yoffset - GAME_HEIGHT / 2);
+			mapImg[i][j].setX((j - xoffset) * 32);
+			mapImg[i][j].setY((i - yoffset) * 32);
 			mapImg[i][j].draw();
 		}
-			
+
+	for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
+		monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32);
+		monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32);
+		monsters[i].draw();
+	}
 
 	player.draw();
 	graphics->spriteEnd();

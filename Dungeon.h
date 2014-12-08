@@ -15,6 +15,7 @@ class Dungeon;
 #include "textDX.h"
 #include "entity.h"
 #include "DungeonGen.h"
+#include "MonsterEntity.h"
 #include <cmath>
 
 //=============================================================================
@@ -44,6 +45,7 @@ private:
 	DungeonGen gen;
 	void loadFloor(int);
 	Image** mapImg;
+	MonsterEntity monsters[100];
 	int floor;
 	int px, py;
 

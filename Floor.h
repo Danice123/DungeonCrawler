@@ -27,6 +27,7 @@ public:
 
 	int getWidth() { return width; }
 	int getHeight() { return height; }
+	std::vector<MonsterInstance> getMonsters() { return monsters; }
 
 	int sx, sy;
 private:

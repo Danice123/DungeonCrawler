@@ -120,6 +120,7 @@
     <ClInclude Include="image.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MonsterEntity.h" />
     <ClInclude Include="MonsterInstance.h" />
     <ClInclude Include="OvalRoom.h" />
     <ClInclude Include="Room.h" />

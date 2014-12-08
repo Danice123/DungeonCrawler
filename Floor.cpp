@@ -226,7 +226,7 @@ void Floor::genFloorLayout() {
 
 	sx = rand() % spawn->getWidth() - left;
 	sy = rand() % spawn->getHeight() - up;
-	//map[stairY][stairX] = 9;
+	map[stairY][stairX] = 9;
 
 	/*for (int i = 0; i < monsters.size(); i++) {
 		char c = monsters[i].getName()[0];
