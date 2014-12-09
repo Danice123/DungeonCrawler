@@ -89,6 +89,8 @@ public:
 		while(search->parent->parent != 0) {
 			search = search->parent;
 		}
+		int x = start.x - search->x;
+		int y = start.y - search->y;
 		return std::pair<int, int>(search->x, search->y);
 	}
 private:

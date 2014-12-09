@@ -47,6 +47,7 @@ private:
 	void loadFloor(int);
 	Image** mapImg;
 	MonsterEntity monsters[100];
+	Entity items[100];
 	int floor;
 	int px, py;
 

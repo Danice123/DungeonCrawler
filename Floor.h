@@ -33,6 +33,8 @@ public:
 		return 0;
 	}
 
+	std::vector<ItemInstance>& getItems() { return items; }
+
 	int sx, sy;
 private:
 	bool initialized;

@@ -78,6 +78,7 @@ void Dungeon::initialize(HWND hwnd) {
 	}
 
 	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 0, 0, 0, &textures[1]);
+	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[1]);
 
 	floor = 0;
 	loadFloor(floor);
@@ -165,7 +166,7 @@ void Dungeon::ai()
 				AStar a(&gen.getFloor(floor), mx, my, px, py);
 				a.run();
 				std::pair<int, int> c = a.getNextStep();
-				if (gen.getFloor(floor).getMonster(c.first, c.second) == 0 && (px != c.first && py != c.second))
+				if (gen.getFloor(floor).getMonster(c.first, c.second) == 0 && !(px == c.first && py == c.second))
 					gen.getFloor(floor).getMonsters()[i].setCoords(c.first, c.second);
 			}
 		}
@@ -200,6 +201,12 @@ void Dungeon::render()
 		monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32);
 		monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32);
 		monsters[i].draw();
+	}
+
+	for (int i = 0; i < gen.getFloor(floor).getItems().size(); i++) {
+		items[i].setX((gen.getFloor(floor).getItems()[i].getX() - xoffset) * 32);
+		items[i].setY((gen.getFloor(floor).getItems()[i].getY() - yoffset) * 32);
+		items[i].draw();
 	}
 
 	player.draw();
