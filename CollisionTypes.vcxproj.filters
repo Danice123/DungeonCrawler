@@ -134,5 +134,8 @@
     <ClInclude Include="MonsterEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="astar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

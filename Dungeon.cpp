@@ -37,8 +37,11 @@ void Dungeon::loadFloor(int floor) {
 			}
 
 	for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
-		monsters[i].setMonster(&gen.getFloor(floor).getMonsters()[i]);
+		//set monster sprite
 	}
+
+	px = gen.getFloor(floor).sx;
+	py = gen.getFloor(floor).sy;
 }
 
 #include <time.h>
@@ -83,34 +86,33 @@ void Dungeon::initialize(HWND hwnd) {
 
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
-	px = gen.getFloor(floor).sx;
-	py = gen.getFloor(floor).sy;
 }
 
-bool isMoving;
-int newX;
-int newY;
-
+bool turnTaken = false;
 //=============================================================================
 // Update all game items
 //=============================================================================
 void Dungeon::update()
 {
-	if (input->wasKeyPressed(VK_UP)) {
-		if (gen.getFloor(0).getTile(px, py - 1) == 0) return;
+	if (input->wasKeyPressed(VK_UP) && gen.getFloor(0).getTile(px, py - 1) != 0 
+		&& gen.getFloor(floor).getMonster(px, py - 1) == 0) {
 		py--;
+		turnTaken = true;
 	}
-	if (input->wasKeyPressed(VK_DOWN)) {
-		if (gen.getFloor(0).getTile(px, py + 1) == 0) return;
+	if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(0).getTile(px, py + 1) != 0
+		&& gen.getFloor(floor).getMonster(px, py + 1) == 0) {
 		py++;
+		turnTaken = true;
 	}
-	if (input->wasKeyPressed(VK_RIGHT)) {
-		if (gen.getFloor(0).getTile(px + 1, py) == 0) return;
+	if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(0).getTile(px + 1, py) != 0
+		&& gen.getFloor(floor).getMonster(px + 1, py) == 0) {
 		px++;
+		turnTaken = true;
 	}
-	if (input->wasKeyPressed(VK_LEFT)) {
-		if (gen.getFloor(0).getTile(px - 1, py) == 0) return;
+	if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(0).getTile(px - 1, py) != 0
+		&& gen.getFloor(floor).getMonster(px - 1, py) == 0) {
 		px--;
+		turnTaken = true;
 	}
 	/*if (!isMoving) {
 		if (input->wasKeyPressed(VK_UP)) {
@@ -154,7 +156,21 @@ void Dungeon::update()
 //=============================================================================
 void Dungeon::ai()
 {
-
+	if (turnTaken) {
+		for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
+			int mx = gen.getFloor(floor).getMonsters()[i].getX();
+			int my = gen.getFloor(floor).getMonsters()[i].getY();
+			int distance = sqrt(pow(px - mx, 2) + pow(py - my, 2));
+			if (distance < 10) {
+				AStar a(&gen.getFloor(floor), mx, my, px, py);
+				a.run();
+				std::pair<int, int> c = a.getNextStep();
+				if (gen.getFloor(floor).getMonster(c.first, c.second) == 0 && (px != c.first && py != c.second))
+					gen.getFloor(floor).getMonsters()[i].setCoords(c.first, c.second);
+			}
+		}
+		turnTaken = false;
+	}
 }
 
 //=============================================================================

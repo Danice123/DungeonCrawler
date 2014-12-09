@@ -16,6 +16,7 @@ class Dungeon;
 #include "entity.h"
 #include "DungeonGen.h"
 #include "MonsterEntity.h"
+#include "astar.h"
 #include <cmath>
 
 //=============================================================================

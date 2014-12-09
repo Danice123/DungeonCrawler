@@ -27,7 +27,11 @@ public:
 
 	int getWidth() { return width; }
 	int getHeight() { return height; }
-	std::vector<MonsterInstance> getMonsters() { return monsters; }
+	std::vector<MonsterInstance>& getMonsters() { return monsters; }
+	MonsterInstance* getMonster(int x, int y) {
+		for (int i = 0; i < monsters.size(); i++) if (x == monsters[i].getX() && y == monsters[i].getY()) return &monsters[i];
+		return 0;
+	}
 
 	int sx, sy;
 private:

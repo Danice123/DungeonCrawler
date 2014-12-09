@@ -105,6 +105,7 @@
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="astar.h" />
     <ClInclude Include="audio.h" />
     <ClInclude Include="DungeonGen.h" />
     <ClInclude Include="Floor.h" />
