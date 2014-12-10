@@ -15,6 +15,7 @@ public:
 	std::string getName() { return name; }
 	int getHealth() { return health; }
 	int getCurrentHealth() { return currentHealth; }
+	void setCurrentHealth(int h) { currentHealth = h; }
 	int getAttack() { return attack; }
 	int getArmor() { return armor; }
 

@@ -31,6 +31,10 @@ public:
 	AStar(Floor* floor, int startx, int starty, int endx, int endy):
 		floor(floor), start(0, startx, starty, 0), ex(endx), ey(endy) {}
 
+	~AStar() {
+		for (int i = 0; i < cleanup.size(); i++) { delete cleanup[i]; }
+	}
+
 	void run() {
 		end = 0;
 		std::priority_queue<Node> q;
@@ -39,6 +43,7 @@ public:
 		list.push_back(start);
 		do {
 			Node* parent = new Node(q.top());
+			cleanup.push_back(parent);
 			if (parent->x == ex && parent->y == ey) {
 				end = parent;
 				break;
@@ -98,6 +103,7 @@ private:
 	Node start;
 	int ex, ey;
 	Node* end;
+	std::vector<Node*> cleanup;
 
 	bool searchList(std::vector<Node>& list, Node& n) {
 		for (int i = 0; i < list.size(); i++) if (list[i] == n) return true;
