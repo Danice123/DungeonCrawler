@@ -42,6 +42,9 @@ void Dungeon::loadFloor(int floor) {
 
 	px = gen.getFloor(floor).sx;
 	py = gen.getFloor(floor).sy;
+
+	gameStates = SPLASH_SCREEN;
+	timeInState = 0;
 }
 
 #include <time.h>
@@ -52,7 +55,7 @@ void Dungeon::loadFloor(int floor) {
 void Dungeon::initialize(HWND hwnd) {
     Game::initialize(hwnd); // throws GameError
 	for (int i = 0; i < nTextures; i++) {
-		if (!textures[i].initialize(graphics, images[i].c_str())) 
+		if (!textures[i].initialize(graphics, images[i].c_str()))
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 	}
 
@@ -95,7 +98,7 @@ bool turnTaken = false;
 //=============================================================================
 void Dungeon::update()
 {
-	if (input->wasKeyPressed(VK_UP) && gen.getFloor(0).getTile(px, py - 1) != 0 
+	if (input->wasKeyPressed(VK_UP) && gen.getFloor(0).getTile(px, py - 1) != 0
 		&& gen.getFloor(floor).getMonster(px, py - 1) == 0) {
 		py--;
 		turnTaken = true;
@@ -117,7 +120,7 @@ void Dungeon::update()
 	}
 	/*if (!isMoving) {
 		if (input->wasKeyPressed(VK_UP)) {
-			
+
 			isMoving = true;
 			newX = player.getX();
 			newY = player.getY() - 32;
@@ -211,6 +214,26 @@ void Dungeon::render()
 
 	player.draw();
 	graphics->spriteEnd();
+}
+
+void Dungeon::gameStateUpdate()
+{
+	if(gameStates != START_MENU && gameStates != MENU)
+		timeInState += frameTime;
+	if (gameStates==SPLASH_SCREEN)
+	{
+		if(input->wasKeyPressed(VK_SPACE) || timeInState>0.0f)
+			gameStates = LEVEL1;
+		//gameStates = START_MENU;
+		//timeInState = 0;
+	}
+	if (gameStates==START_MENU) {
+
+	}
+	if (gameStates==LEVEL1)
+	{
+		timeInState = 0;
+	}
 }
 
 //=============================================================================
