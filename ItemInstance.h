@@ -6,28 +6,24 @@ class ItemInstance {
 public:
 	ItemInstance(int level, Items i) {
 		name = i.getName();
-		health = i.getHealth() * i.getScale() * level;
-		currentHealth = health;
-		attack = i.getAttack() * i.getScale() * level;
-		armor = i.getArmor() * i.getScale() * level;
+		type = i.getType();
+		value = i.getValue() * i.getScale() * level;
+		isOnGround = true;
 	}
 
 	std::string getName() { return name; }
-	int getHealth() { return health; }
-	int getCurrentHealth() { return currentHealth; }
-	int getAttack() { return attack; }
-	int getArmor() { return armor; }
+	int getType() { return type; }
+	int getValue() { return value; }
 
 	int getX() { return x; }
 	int getY() { return y; }
 	void setCoords(int x, int y) { this->x = x; this->y = y; }
+
+	bool isOnGround;
 private:
 	std::string name;
-	int health;
-	int currentHealth;
-	int attack;
-	int armor;
-
+	int type;
+	int value;
 	int x, y;
 };
 #endif

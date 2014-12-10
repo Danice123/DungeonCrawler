@@ -43,11 +43,7 @@ void Dungeon::loadFloor(int floor) {
 
 	player.x = gen.getFloor(floor).sx;
 	player.y = gen.getFloor(floor).sy;
-	player.getInventory().clear();
-	player.getInventory().push_back(ItemInstance(1, gen.getItemList()[0]));
-	player.setEquippedWeapon(0);
 
-	gameStates = SPLASH_SCREEN;
 	timeInState = 0;
 }
 
@@ -119,6 +115,9 @@ void Dungeon::initialize(HWND hwnd) {
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
+	player.getInventory().clear();
+	player.getInventory().push_back(ItemInstance(1, gen.getItemList()[0]));
+	player.setEquippedWeapon(0);
 
 	activeMenu = false;
 	inventory = new Menu();
@@ -126,6 +125,17 @@ void Dungeon::initialize(HWND hwnd) {
 	menuBG.setScaleX(200);
 	menuBG.setScaleY(GAME_HEIGHT);
 	menuBG.setX(inventory->getAnchorX()-20);
+	gameStates = SPLASH_SCREEN;
+
+	mainMenu = new Menu();
+	mainMenu->initialize(graphics, input, NULL);
+
+	mainMenu->setMenuHeading("Raiders of the Lost Dungeon");
+
+	std::vector<std::string> menuItems;
+	menuItems.push_back("New Game");	// Menu 1
+	menuItems.push_back("Exit Game");	// Menu 2
+	mainMenu->setMenuItems(menuItems);
 }
 
 bool turnTaken = false;
@@ -134,64 +144,114 @@ bool turnTaken = false;
 //=============================================================================
 void Dungeon::update()
 {
-if(activeMenu) {
-	inventory->update();
-} else {
-	if (player.getHealth() <= 0) {
-		return;
-	}
-	if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
-		if (gen.getFloor(floor).getTile(player.x, player.y - 1) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
-			int damage = player.getAttack() - m->getArmor();
-			m->setCurrentHealth(m->getCurrentHealth() - damage);
+	gameStateUpdate();
+	switch(gameStates) {
+	case LEVEL1:
+	case LEVEL2:
+	case LEVEL3:
+	case LEVEL4:
+	case LEVEL5:
+		if(activeMenu) {
+			inventory->update();
 		} else {
-			player.y--;
+			if (player.getHealth() <= 0) { //Death
+				return;
+			}
+			if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
+				if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
+					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
+					int damage = player.getAttack() - m->getArmor();
+					m->setCurrentHealth(m->getCurrentHealth() - damage);
+				} else {
+					player.y--;
+					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+					if (gen.getFloor(floor).getTile(player.x, player.y - 1) == 9) loadFloor(floor + 1);
+				}
+				turnTaken = true;
+			}
+			if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(player.x, player.y + 1) != 0) {
+				if (gen.getFloor(floor).getMonster(player.x, player.y + 1) != 0) {
+					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
+					int damage = player.getAttack() - m->getArmor();
+					m->setCurrentHealth(m->getCurrentHealth() - damage);
+				} else {
+					player.y++;
+					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+					if (gen.getFloor(floor).getTile(player.x, player.y + 1) == 9) loadFloor(floor + 1);
+				}
+				turnTaken = true;
+			}
+			if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
+				player.setFrames(0, 10);
+				player.setFacingRight(true);
+				player.flipHorizontal(!player.isFacingRight());
+				if (gen.getFloor(floor).getMonster(player.x + 1, player.y) != 0) {
+					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
+					int damage = player.getAttack() - m->getArmor();
+					m->setCurrentHealth(m->getCurrentHealth() - damage);
+				} else {
+					player.x++;
+					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+					if (gen.getFloor(floor).getTile(player.x + 1, player.y) == 9) loadFloor(floor + 1);
+				}
+				turnTaken = true;
+			}
+			if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
+				player.setFrames(0,10);	
+				player.setFacingRight(false);
+				player.flipHorizontal(!player.isFacingRight());
+				if (gen.getFloor(floor).getMonster(player.x - 1, player.y) != 0) {
+					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
+					int damage = player.getAttack() - m->getArmor();
+					m->setCurrentHealth(m->getCurrentHealth() - damage);
+				} else {
+					player.x--;
+					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+					if (gen.getFloor(floor).getTile(player.x - 1, player.y) == 9) loadFloor(floor + 1);
+				}
+				turnTaken = true;
+			}
 		}
-		turnTaken = true;
-	}
-	if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(player.x, player.y + 1) != 0) {
-		if (gen.getFloor(floor).getTile(player.x, player.y + 1) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(player.x, player.y + 1) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
-			int damage = player.getAttack() - m->getArmor();
-			m->setCurrentHealth(m->getCurrentHealth() - damage);
-		} else {
-			player.y++;
+		if (input->wasKeyPressed(VK_ESCAPE)) {
+			activeMenu = !activeMenu;
 		}
-		turnTaken = true;
-	}
-	if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
-		player.setFrames(0, 10);
-		player.setFacingRight(true);
-		player.flipHorizontal(!player.isFacingRight());
-		if (gen.getFloor(floor).getTile(player.x + 1, player.y) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(player.x + 1, player.y) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
-			int damage = player.getAttack() - m->getArmor();
-			m->setCurrentHealth(m->getCurrentHealth() - damage);
-		} else {
-			player.x++;
-		}
-		turnTaken = true;
-	}
-	if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
-		player.setFrames(0,10);	
-		player.setFacingRight(false);
-		player.flipHorizontal(!player.isFacingRight());
+		player.update(frameTime);
+		greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
+		break;	// End case
 
-		if (gen.getFloor(floor).getTile(player.x - 1, player.y) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(player.x - 1, player.y) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
-			int damage = player.getAttack() - m->getArmor();
-			m->setCurrentHealth(m->getCurrentHealth() - damage);
-		} else {
-			player.x--;
+	case SPLASH_SCREEN:
+
+		break;
+	case START_MENU:
+		mainMenu->update();
+		switch(mainMenu->getMenuState()) {
+		case NEW_GAME:
+			gameStates = LEVEL1;
+			break;
+		case EXIT_GAME:
+			exitGame();
+			break;
 		}
-		turnTaken = true;
+		break;
 	}
 }
+<<<<<<< HEAD
 	if (input->wasKeyPressed(VK_ESCAPE)) {
 		activeMenu = !activeMenu;
 	}
@@ -202,6 +262,8 @@ if(activeMenu) {
 	//for(int a =0; 
 	greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
 }
+=======
+>>>>>>> origin/master
 
 //=============================================================================
 // Artificial Intelligence
@@ -244,57 +306,75 @@ void Dungeon::collisions()
 //=============================================================================
 void Dungeon::render()
 {
+	graphics->spriteBegin();
 	int xoffset = player.x - GAME_WIDTH / 64;
 	int yoffset = player.y - GAME_HEIGHT / 64;
-	graphics->spriteBegin();
 
-	for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
-		for (int j = 0; j < gen.getFloor(floor).getWidth(); j++) {
-			mapImg[i][j].setX((j - xoffset) * 32);
-			mapImg[i][j].setY((i - yoffset) * 32);
-			mapImg[i][j].draw();
+	switch(gameStates) {
+	case LEVEL1:
+	case LEVEL2:
+	case LEVEL3:
+	case LEVEL4:
+	case LEVEL5:	
+
+		for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
+			for (int j = 0; j < gen.getFloor(floor).getWidth(); j++) {
+				mapImg[i][j].setX((j - xoffset) * 32);
+				mapImg[i][j].setY((i - yoffset) * 32);
+				mapImg[i][j].draw();
+			}
+
+		for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
+			if (gen.getFloor(floor).getMonsters()[i].getCurrentHealth() <= 0) continue;
+			monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32);
+			monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32);
+			monsters[i].draw();
 		}
 
-	for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
-		if (gen.getFloor(floor).getMonsters()[i].getCurrentHealth() <= 0) continue;
-		monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32);
-		monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32);
-		monsters[i].draw();
-	}
+		for (int i = 0; i < gen.getFloor(floor).getItems().size(); i++) {
+			if (!gen.getFloor(floor).getItems()[i].isOnGround) continue;
+			items[i].setX((gen.getFloor(floor).getItems()[i].getX() - xoffset) * 32);
+			items[i].setY((gen.getFloor(floor).getItems()[i].getY() - yoffset) * 32);
+			items[i].draw();
+		}
 
-	for (int i = 0; i < gen.getFloor(floor).getItems().size(); i++) {
-		items[i].setX((gen.getFloor(floor).getItems()[i].getX() - xoffset) * 32);
-		items[i].setY((gen.getFloor(floor).getItems()[i].getY() - yoffset) * 32);
-		items[i].draw();
-	}
+		player.draw();
+		redBar.draw();
+		greenBar.draw();
+		if(activeMenu) {
+			menuBG.draw();
+			inventory->displayMenu(frameTime);
+		}
+		break;
 
-	player.draw();
-	redBar.draw();
-	greenBar.draw();
-	if(activeMenu) {
-		menuBG.draw();
-		inventory->displayMenu(frameTime);
+	case SPLASH_SCREEN:
+		break;
+
+	case START_MENU:
+		mainMenu->displayMenu(frameTime);
+		break;
 	}
 	graphics->spriteEnd();
 }
 
 void Dungeon::gameStateUpdate()
 {
-	if(gameStates != START_MENU && gameStates != MENU)
-		timeInState += frameTime;
-	if (gameStates==SPLASH_SCREEN)
-	{
-		if(input->wasKeyPressed(VK_SPACE) || timeInState>0.0f)
-			gameStates = LEVEL1;
-		//gameStates = START_MENU;
-		//timeInState = 0;
-	}
-	if (gameStates==START_MENU) {
+	timeInState += frameTime;
+	switch(gameStates) {
+	if(gameStates != START_MENU)
+		
+	case SPLASH_SCREEN:
+		if(input->wasKeyPressed(VK_SPACE) || timeInState>1.0f) {
+			gameStates = START_MENU;
+			//timeInState = 0;
+		}
+		break;
+	case START_MENU:
 
-	}
-	if (gameStates==LEVEL1)
-	{
+		break;
+	case LEVEL1:
 		timeInState = 0;
+		break;
 	}
 }
 

@@ -13,13 +13,13 @@ public:
 	void setHealth(int h) { health = h; }
 	int getAttack() {
 		if (equippedWeapon == -1) return 0;
-		return inventory[equippedWeapon].getAttack();
+		return inventory[equippedWeapon].getValue();
 	}
 	int getArmor() {
 		if (equippedArmor == -1) return 0;
-		return inventory[equippedArmor].getArmor();
+		return inventory[equippedArmor].getValue();
 	}
-	std::vector<ItemInstance> getInventory() { return inventory; }
+	std::vector<ItemInstance>& getInventory() { return inventory; }
 	void setEquippedArmor(int e) { equippedArmor = e; }
 	void setEquippedWeapon(int e) { equippedWeapon = e; }
 

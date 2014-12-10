@@ -54,6 +54,7 @@ private:
 	Hero player;
 
 	Menu* inventory;
+	Menu* mainMenu;
 	std::vector<ItemInstance> inventoryItems;
 	bool activeMenu;
 	Image menuBG;
