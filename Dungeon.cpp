@@ -112,7 +112,7 @@ void Dungeon::initialize(HWND hwnd) {
 
 	activeMenu = false;
 	inventory = new Menu();
-	inventory->initialize(graphics, input, NULL, &(gen.getFloor(floor).getItems()), "Inventory");
+	inventory->initialize(graphics, input, NULL, &(player.getInventory()), "Inventory");
 	menuBG.setScaleX(200);
 	menuBG.setScaleY(GAME_HEIGHT);
 	menuBG.setX(inventory->getAnchorX()-20);
