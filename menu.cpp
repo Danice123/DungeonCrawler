@@ -130,17 +130,27 @@ void Menu::update()
 		menuState=0;
 		if (input->wasKeyPressed(VK_UP))
 		{
+			if(menuAnchor != D3DXVECTOR2(270,10)) {
+				shift += verticalOffset;
+			}
 			linePtr--;
 		}
 		if (input->wasKeyPressed(VK_DOWN))
 		{
 			linePtr++;
+			shift -= verticalOffset;
 		}
 
-		if (linePtr > (int)(menuItems.size()-1))
+		if (linePtr > (int)(menuItems.size()-1)) {
 			linePtr = 0;
-		if (linePtr < 0)
+			menuAnchor = D3DXVECTOR2(270,10);
+			shift = 0;
+		}
+		if (linePtr < 0) {
 			linePtr = menuItems.size()-1;
+			if(items->size()>0)
+				menuAnchor = D3DXVECTOR2(270,10+(-verticalOffset*linePtr));
+		}
 
 		if (input->wasKeyPressed(VK_RETURN)) {
 			if(children[linePtr] != NULL) {
