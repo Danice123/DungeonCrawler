@@ -250,8 +250,6 @@ void Dungeon::update()
 		}
 		break;
 	}
-}
-<<<<<<< HEAD
 	if (input->wasKeyPressed(VK_ESCAPE)) {
 		activeMenu = !activeMenu;
 	}
@@ -262,8 +260,6 @@ void Dungeon::update()
 	//for(int a =0; 
 	greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
 }
-=======
->>>>>>> origin/master
 
 //=============================================================================
 // Artificial Intelligence
