@@ -50,7 +50,6 @@ private:
    std::vector<ItemInstance>* items;
 
    float shift;
-
    int MODDER;
 
 public:
