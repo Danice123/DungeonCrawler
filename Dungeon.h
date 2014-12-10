@@ -53,14 +53,13 @@ private:
 	int floor;
 	int px, py;
 
-<<<<<<< HEAD
+
 	Hero player;
-=======
-	Entity player;
+
 
 	GameStates gameStates;
 	float timeInState;
->>>>>>> origin/master
+
 };
 
 #endif
