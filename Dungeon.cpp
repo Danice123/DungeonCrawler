@@ -116,6 +116,16 @@ void Dungeon::initialize(HWND hwnd) {
 	menuBG.setScaleY(GAME_HEIGHT);
 	menuBG.setX(inventory->getAnchorX()-20);
 	gameStates = SPLASH_SCREEN;
+
+	mainMenu = new Menu();
+	mainMenu->initialize(graphics, input, NULL);
+
+	mainMenu->setMenuHeading("Raiders of the Lost Dungeon");
+
+	std::vector<std::string> menuItems;
+	menuItems.push_back("New Game");	// Menu 1
+	menuItems.push_back("Exit Game");	// Menu 2
+	mainMenu->setMenuItems(menuItems);
 }
 
 bool turnTaken = false;
@@ -219,7 +229,15 @@ void Dungeon::update()
 
 		break;
 	case START_MENU:
-
+		mainMenu->update();
+		switch(mainMenu->getMenuState()) {
+		case NEW_GAME:
+			gameStates = LEVEL1;
+			break;
+		case EXIT_GAME:
+			exitGame();
+			break;
+		}
 		break;
 	}
 }
@@ -310,6 +328,7 @@ void Dungeon::render()
 		break;
 
 	case START_MENU:
+		mainMenu->displayMenu(frameTime);
 		break;
 	}
 	graphics->spriteEnd();
@@ -323,8 +342,7 @@ void Dungeon::gameStateUpdate()
 		
 	case SPLASH_SCREEN:
 		if(input->wasKeyPressed(VK_SPACE) || timeInState>1.0f) {
-			gameStates = LEVEL1;
-			//gameStates = START_MENU;
+			gameStates = START_MENU;
 			//timeInState = 0;
 		}
 		break;

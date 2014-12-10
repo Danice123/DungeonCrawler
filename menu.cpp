@@ -148,7 +148,7 @@ void Menu::update()
 		}
 		if (linePtr < 0) {
 			linePtr = menuItems.size()-1;
-			if(items->size()>0)
+			if(menuItems.size()>0)
 				menuAnchor = D3DXVECTOR2(270,10+(-verticalOffset*linePtr));
 		}
 
@@ -178,16 +178,16 @@ void Menu::update()
 
 void Menu::displayMenu(float frametime)
 {	
+	if(shift < 0.0f) {
+		shift+=300.0f*frametime;
+		menuAnchor.y-=300.0f*frametime;
+	}
+	if(shift > 0.0f) {
+		shift-=300.0f*frametime;
+		menuAnchor.y+=300.0f*frametime;
+	}
 	if(dynamic) {
 		menuHeadingFont->print(heading, menuAnchor.x, menuAnchor.y);
-		if(shift < 0.0f) {
-			shift+=300.0f*frametime;
-			menuAnchor.y-=300.0f*frametime;
-		}
-		if(shift > 0.0f) {
-			shift-=300.0f*frametime;
-			menuAnchor.y+=300.0f*frametime;
-		}
 
 		for(int i=0;i<items->size();++i) {
 			if (linePtr==i)	// Only highlight the active menu
