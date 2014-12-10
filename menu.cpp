@@ -7,6 +7,7 @@ int Menu::lastMenuState;
 
 Menu::Menu()
 {
+	MODDER = 100;
 	selectedItem = -1;	//nothing return
 	menuItemFont = new TextDX();
 	menuHeadingFont = new TextDX();

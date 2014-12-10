@@ -49,7 +49,7 @@ private:
    std::string heading;
    std::vector<ItemInstance>* items;
 
-   const int MODDER = 100;
+   int MODDER;
 
 public:
     // constructor

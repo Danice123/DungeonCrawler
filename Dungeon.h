@@ -56,6 +56,9 @@ private:
 
 	Hero player;
 
+	Menu* inventory;
+	std::vector<ItemInstance> inventoryItems;
+	bool activeMenu;
 
 	GameStates gameStates;
 	float timeInState;

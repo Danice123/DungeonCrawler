@@ -94,6 +94,10 @@ void Dungeon::initialize(HWND hwnd) {
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
+
+	activeMenu = false;
+	inventory = new Menu();
+	inventory->initialize(graphics, input, NULL, &(gen.getFloor(floor).getItems()), "Inventory");
 }
 
 bool turnTaken = false;
@@ -102,56 +106,63 @@ bool turnTaken = false;
 //=============================================================================
 void Dungeon::update()
 {
-	if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(px, py - 1) != 0) {
-		if (gen.getFloor(floor).getTile(px, py - 1) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(px, py - 1) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(px, py - 1);
-			int damage = /*player.getAttack()*/1 - m->getArmor();
-			m->setCurrentHealth(m->getCurrentHealth() - damage);
-		} else {
-			py--;
+	if(activeMenu) {
+		inventory->update();
+	} else {
+		if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(px, py - 1) != 0) {
+			if (gen.getFloor(floor).getTile(px, py - 1) == 9) loadFloor(floor + 1);
+			if (gen.getFloor(floor).getMonster(px, py - 1) != 0) {
+				MonsterInstance* m = gen.getFloor(floor).getMonster(px, py - 1);
+				int damage = /*player.getAttack()*/1 - m->getArmor();
+				m->setCurrentHealth(m->getCurrentHealth() - damage);
+			} else {
+				py--;
+			}
+			turnTaken = true;
 		}
-		turnTaken = true;
-	}
-	if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(px, py + 1) != 0) {
-		if (gen.getFloor(floor).getTile(px, py + 1) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(px, py + 1) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(px, py + 1);
-			int damage = /*player.getAttack()*/1 - m->getArmor();
-			m->setCurrentHealth(m->getCurrentHealth() - damage);
-		} else {
-			py++;
+		if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(px, py + 1) != 0) {
+			if (gen.getFloor(floor).getTile(px, py + 1) == 9) loadFloor(floor + 1);
+			if (gen.getFloor(floor).getMonster(px, py + 1) != 0) {
+				MonsterInstance* m = gen.getFloor(floor).getMonster(px, py + 1);
+				int damage = /*player.getAttack()*/1 - m->getArmor();
+				m->setCurrentHealth(m->getCurrentHealth() - damage);
+			} else {
+				py++;
+			}
+			turnTaken = true;
 		}
-		turnTaken = true;
-	}
-	if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(px + 1, py) != 0) {
-		player.setFrames(0,10);
-		player.setFacingRight(true);
-		player.flipHorizontal(!player.isFacingRight());
-		if (gen.getFloor(floor).getTile(px + 1, py) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(px + 1, py) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(px + 1, py);
-			int damage = /*player.getAttack()*/1 - m->getArmor();
-			m->setCurrentHealth(m->getCurrentHealth() - damage);
-		} else {
-			px++;
+		if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(px + 1, py) != 0) {
+			player.setFrames(0,10);
+			player.setFacingRight(true);
+			player.flipHorizontal(!player.isFacingRight());
+			if (gen.getFloor(floor).getTile(px + 1, py) == 9) loadFloor(floor + 1);
+			if (gen.getFloor(floor).getMonster(px + 1, py) != 0) {
+				MonsterInstance* m = gen.getFloor(floor).getMonster(px + 1, py);
+				int damage = /*player.getAttack()*/1 - m->getArmor();
+				m->setCurrentHealth(m->getCurrentHealth() - damage);
+			} else {
+				px++;
+			}
+			turnTaken = true;
 		}
-		turnTaken = true;
-	}
-	if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(px - 1, py) != 0) {
-		player.setFrames(0,10);	
-		player.setFacingRight(false);
-		player.flipHorizontal(!player.isFacingRight());
+		if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(px - 1, py) != 0) {
+			player.setFrames(0,10);	
+			player.setFacingRight(false);
+			player.flipHorizontal(!player.isFacingRight());
 
-		if (gen.getFloor(floor).getTile(px - 1, py) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(px - 1, py) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(px - 1, py);
-			int damage = /*player.getAttack()*/1 - m->getArmor();
-			m->setCurrentHealth(m->getCurrentHealth() - damage);
-		} else {
-			px--;
+			if (gen.getFloor(floor).getTile(px - 1, py) == 9) loadFloor(floor + 1);
+			if (gen.getFloor(floor).getMonster(px - 1, py) != 0) {
+				MonsterInstance* m = gen.getFloor(floor).getMonster(px - 1, py);
+				int damage = /*player.getAttack()*/1 - m->getArmor();
+				m->setCurrentHealth(m->getCurrentHealth() - damage);
+			} else {
+				px--;
+			}
+			turnTaken = true;
 		}
-		turnTaken = true;
+	}
+	if (input->wasKeyPressed(VK_ESCAPE)) {
+		activeMenu = !activeMenu;
 	}
 	player.update(frameTime);
 }
@@ -200,6 +211,7 @@ void Dungeon::render()
 	int xoffset = px - GAME_WIDTH / 64;
 	int yoffset = py - GAME_HEIGHT / 64;
 	graphics->spriteBegin();
+
 	for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
 		for (int j = 0; j < gen.getFloor(floor).getWidth(); j++) {
 			mapImg[i][j].setX((j - xoffset) * 32);
@@ -221,6 +233,7 @@ void Dungeon::render()
 	}
 
 	player.draw();
+	if(activeMenu) inventory->displayMenu(frameTime);
 	graphics->spriteEnd();
 }
 
