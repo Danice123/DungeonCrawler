@@ -143,6 +143,20 @@ void Dungeon::update()
 	case LEVEL5:
 		if(activeMenu) {
 			inventory->update();
+			if(inventory->getMenuState() != -1) {
+				switch(player.getInventory()[inventory->getMenuState()].getType()) {
+				case 0:	// Weapon
+					player.setEquippedWeapon(inventory->getMenuState());
+					break;
+				case 1:	// Armor
+					player.setEquippedArmor(inventory->getMenuState());
+					break;
+				case 2:	// Health
+					player.setHealth(player.getHealth()+player.getInventory()[inventory->getMenuState()].getValue());
+					player.getInventory().erase(player.getInventory().begin()+inventory->getMenuState());
+					break;
+				}
+			}
 		} else {
 			if (player.getHealth() <= 0) { //Death
 				return;
@@ -320,7 +334,7 @@ void Dungeon::render()
 		greenBar.draw();
 		if(activeMenu) {
 			menuBG.draw();
-			inventory->displayMenu(frameTime);
+			inventory->displayMenu(frameTime,player.getEquippedArmor(),player.getEquippedWeapon());
 		}
 		break;
 

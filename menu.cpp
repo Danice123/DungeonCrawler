@@ -36,7 +36,7 @@ void Menu::initialize(Graphics *g, Input *i, Menu* p)
 	input = i;
 	verticalOffset = 30;
 	linePtr = 0;
-	menuState = 0;
+	menuState = -1;
 	lastMenuState = 0;
 	selectedItem = -1;
 	graphics = g;
@@ -98,7 +98,7 @@ void Menu::initialize(Graphics *g, Input *i, Menu* p, std::vector<ItemInstance>*
 void Menu::update()
 {
 	if(dynamic) {
-		menuState=0;
+		menuState=-1;
 		if (input->wasKeyPressed(VK_UP))
 		{
 			if(menuAnchor != D3DXVECTOR2(270,10)) {
@@ -127,7 +127,7 @@ void Menu::update()
 			menuState = linePtr;
 		}
 	} else {
-		menuState=0;
+		menuState=-1;
 		if (input->wasKeyPressed(VK_UP))
 		{
 			if(menuAnchor != D3DXVECTOR2(270,10)) {
@@ -176,7 +176,7 @@ void Menu::update()
 }
 
 
-void Menu::displayMenu(float frametime)
+void Menu::displayMenu(float frametime, int w, int a)
 {	
 	if(shift < 0.0f) {
 		shift+=300.0f*frametime;
@@ -189,11 +189,15 @@ void Menu::displayMenu(float frametime)
 	if(dynamic) {
 		menuHeadingFont->print(heading, menuAnchor.x, menuAnchor.y);
 
+		std::string catString = "";
 		for(int i=0;i<items->size();++i) {
-			if (linePtr==i)	// Only highlight the active menu
-			menuItemFontHighlight->print((*items)[i].getName(), activeMenu->menuAnchor.x, activeMenu->menuAnchor.y+verticalOffset*(i+1));
-		else
-			menuItemFont->print((*items)[i].getName(), activeMenu->menuAnchor.x, activeMenu->menuAnchor.y+verticalOffset*(i+1));
+			if(w == i || a == i) { catString = "+ "; }
+			if (linePtr==i) {	// Only highlight the active menu
+				menuItemFontHighlight->print(catString+(*items)[i].getName(), activeMenu->menuAnchor.x, activeMenu->menuAnchor.y+verticalOffset*(i+1));
+			} else {
+				menuItemFont->print(catString+(*items)[i].getName(), activeMenu->menuAnchor.x, activeMenu->menuAnchor.y+verticalOffset*(i+1));
+			}
+			catString = "";
 		}
 
 

@@ -21,7 +21,9 @@ public:
 	}
 	std::vector<ItemInstance>& getInventory() { return inventory; }
 	void setEquippedArmor(int e) { equippedArmor = e; }
+	int  getEquippedArmor() { return equippedArmor; }
 	void setEquippedWeapon(int e) { equippedWeapon = e; }
+	int  getEquippedWeapon() { return equippedWeapon; }
 
 	int x;
 	int y;
