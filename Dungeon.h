@@ -40,6 +40,7 @@ public:
     void render();      // "
     void releaseAll();
     void resetAll();
+	void gameStateUpdate();
 private:
 	TextureManager* textures;
 	TextDX text;
@@ -48,10 +49,18 @@ private:
 	void loadFloor(int);
 	Image** mapImg;
 	MonsterEntity monsters[100];
+	Entity items[100];
 	int floor;
 	int px, py;
 
+<<<<<<< HEAD
 	Hero player;
+=======
+	Entity player;
+
+	GameStates gameStates;
+	float timeInState;
+>>>>>>> origin/master
 };
 
 #endif
