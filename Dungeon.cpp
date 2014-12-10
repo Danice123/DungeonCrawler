@@ -1,7 +1,7 @@
 #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/person.png" };
-const int nTextures = 2;
+const std::string images[] = { "img/tiles.png", "img/person.png", "img/hero_sprite_sheet.png" };
+const int nTextures = 3;
 
 //=============================================================================
 // Constructor
@@ -63,6 +63,7 @@ void Dungeon::initialize(HWND hwnd) {
 
 	int maxHeight = 0;
 	int maxWidth = 0;
+
 	for (int i = 0; i < gen.getAmountFloors(); i++) {
 		gen.getFloor(i).genFloorLayout();
 		if (maxHeight < gen.getFloor(i).getHeight()) maxHeight = gen.getFloor(i).getHeight();
@@ -82,10 +83,12 @@ void Dungeon::initialize(HWND hwnd) {
 	floor = 0;
 	loadFloor(floor);
 
-	player.initialize(this, 0, 0, 0, &textures[1]);
-
+	player.initialize(this, 50, 50, 11, &textures[2]);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
+	player.setScale(32.0f/50.0f);
+	player.setFrameDelay(0.1f);
+	player.setCurrentFrame(3);
 }
 
 bool turnTaken = false;
@@ -94,6 +97,7 @@ bool turnTaken = false;
 //=============================================================================
 void Dungeon::update()
 {
+	
 	if (input->wasKeyPressed(VK_UP) && gen.getFloor(0).getTile(px, py - 1) != 0 
 		&& gen.getFloor(floor).getMonster(px, py - 1) == 0) {
 		py--;
@@ -107,13 +111,20 @@ void Dungeon::update()
 	if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(0).getTile(px + 1, py) != 0
 		&& gen.getFloor(floor).getMonster(px + 1, py) == 0) {
 		px++;
+		player.setFacingRight(true);
 		turnTaken = true;
+		player.setFrames(0, 10);
+		player.flipHorizontal(!player.isFacingRight());
 	}
 	if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(0).getTile(px - 1, py) != 0
 		&& gen.getFloor(floor).getMonster(px - 1, py) == 0) {
 		px--;
 		turnTaken = true;
+		player.setFacingRight(false);
+		player.setFrames(0,10);
+		player.flipHorizontal(!player.isFacingRight());
 	}
+
 	/*if (!isMoving) {
 		if (input->wasKeyPressed(VK_UP)) {
 			
@@ -147,8 +158,8 @@ void Dungeon::update()
 		player.setY(player.getY() + player.getVelocity().y);
 		if (newY == player.getY() && newX == player.getX()) isMoving = false;
 	}
-
-	player.update(frameTime);*/
+	*/
+	player.update(frameTime);
 }
 
 //=============================================================================

@@ -18,6 +18,7 @@ class Dungeon;
 #include "MonsterEntity.h"
 #include "astar.h"
 #include <cmath>
+#include "Hero.h"
 
 //=============================================================================
 // This class is the core of the game
@@ -42,7 +43,7 @@ public:
 private:
 	TextureManager* textures;
 	TextDX text;
-
+	bool keyDownLastFrame;
 	DungeonGen gen;
 	void loadFloor(int);
 	Image** mapImg;
@@ -50,7 +51,7 @@ private:
 	int floor;
 	int px, py;
 
-	Entity player;
+	Hero player;
 };
 
 #endif

@@ -90,6 +90,7 @@
     <ClCompile Include="audio.cpp" />
     <ClCompile Include="DungeonGen.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="Hero.cpp" />
     <ClCompile Include="Items.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="Dungeon.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="audio.h" />
     <ClInclude Include="DungeonGen.h" />
     <ClInclude Include="Floor.h" />
+    <ClInclude Include="Hero.h" />
     <ClInclude Include="ItemInstance.h" />
     <ClInclude Include="Items.h" />
     <ClInclude Include="menu.h" />
