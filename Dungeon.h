@@ -59,6 +59,7 @@ private:
 	Menu* inventory;
 	std::vector<ItemInstance> inventoryItems;
 	bool activeMenu;
+	Image menuBG;
 
 	GameStates gameStates;
 	float timeInState;

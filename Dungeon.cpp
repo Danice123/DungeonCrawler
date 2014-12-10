@@ -1,8 +1,8 @@
  
 #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/person.png", "img/hero_sprite_sheet.png" };
-const int nTextures = 3;
+const std::string images[] = { "img/tiles.png", "img/person.png", "img/hero_sprite_sheet.png", "img/menuBG - Nathan Snyder.png" };
+const int nTextures = 4;
 
 //=============================================================================
 // Constructor
@@ -81,6 +81,8 @@ void Dungeon::initialize(HWND hwnd) {
 			mapImg[i][j].initialize(graphics, 32, 32, 10, &textures[0]);
 		}
 	}
+	menuBG.initialize(graphics, 1, 1, 10, &textures[3]);
+
 
 	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 0, 0, 0, &textures[1]);
 	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[1]);
@@ -98,6 +100,9 @@ void Dungeon::initialize(HWND hwnd) {
 	activeMenu = false;
 	inventory = new Menu();
 	inventory->initialize(graphics, input, NULL, &(gen.getFloor(floor).getItems()), "Inventory");
+	menuBG.setScaleX(200);
+	menuBG.setScaleY(GAME_HEIGHT);
+	menuBG.setX(inventory->getAnchorX()-20);
 }
 
 bool turnTaken = false;
@@ -233,7 +238,10 @@ void Dungeon::render()
 	}
 
 	player.draw();
-	if(activeMenu) inventory->displayMenu(frameTime);
+	if(activeMenu) {
+		menuBG.draw();
+		inventory->displayMenu(frameTime);
+	}
 	graphics->spriteEnd();
 }
 
