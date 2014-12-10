@@ -8,6 +8,7 @@ public:
 		name = i.getName();
 		type = i.getType();
 		value = i.getValue() * i.getScale() * level;
+		isOnGround = true;
 	}
 
 	std::string getName() { return name; }
@@ -17,6 +18,8 @@ public:
 	int getX() { return x; }
 	int getY() { return y; }
 	void setCoords(int x, int y) { this->x = x; this->y = y; }
+
+	bool isOnGround;
 private:
 	std::string name;
 	int type;

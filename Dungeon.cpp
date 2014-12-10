@@ -134,28 +134,38 @@ void Dungeon::update()
 		if(activeMenu) {
 			inventory->update();
 		} else {
-			if (player.getHealth() <= 0) {
+			if (player.getHealth() <= 0) { //Death
 				return;
 			}
 			if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
-				if (gen.getFloor(floor).getTile(player.x, player.y - 1) == 9) loadFloor(floor + 1);
 				if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 				} else {
 					player.y--;
+					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+					if (gen.getFloor(floor).getTile(player.x, player.y - 1) == 9) loadFloor(floor + 1);
 				}
 				turnTaken = true;
 			}
 			if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(player.x, player.y + 1) != 0) {
-				if (gen.getFloor(floor).getTile(player.x, player.y + 1) == 9) loadFloor(floor + 1);
 				if (gen.getFloor(floor).getMonster(player.x, player.y + 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 				} else {
 					player.y++;
+					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+					if (gen.getFloor(floor).getTile(player.x, player.y + 1) == 9) loadFloor(floor + 1);
 				}
 				turnTaken = true;
 			}
@@ -163,13 +173,18 @@ void Dungeon::update()
 				player.setFrames(0, 10);
 				player.setFacingRight(true);
 				player.flipHorizontal(!player.isFacingRight());
-				if (gen.getFloor(floor).getTile(player.x + 1, player.y) == 9) loadFloor(floor + 1);
 				if (gen.getFloor(floor).getMonster(player.x + 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 				} else {
 					player.x++;
+					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+					if (gen.getFloor(floor).getTile(player.x + 1, player.y) == 9) loadFloor(floor + 1);
 				}
 				turnTaken = true;
 			}
@@ -177,14 +192,18 @@ void Dungeon::update()
 				player.setFrames(0,10);	
 				player.setFacingRight(false);
 				player.flipHorizontal(!player.isFacingRight());
-
-				if (gen.getFloor(floor).getTile(player.x - 1, player.y) == 9) loadFloor(floor + 1);
 				if (gen.getFloor(floor).getMonster(player.x - 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 				} else {
 					player.x--;
+					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+					if (gen.getFloor(floor).getTile(player.x - 1, player.y) == 9) loadFloor(floor + 1);
 				}
 				turnTaken = true;
 			}
@@ -272,6 +291,7 @@ void Dungeon::render()
 		}
 
 		for (int i = 0; i < gen.getFloor(floor).getItems().size(); i++) {
+			if (!gen.getFloor(floor).getItems()[i].isOnGround) continue;
 			items[i].setX((gen.getFloor(floor).getItems()[i].getX() - xoffset) * 32);
 			items[i].setY((gen.getFloor(floor).getItems()[i].getY() - yoffset) * 32);
 			items[i].draw();

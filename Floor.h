@@ -35,6 +35,11 @@ public:
 	}
 
 	std::vector<ItemInstance>& getItems() { return items; }
+	ItemInstance* getItem(int x, int y) {
+		for (int i = 0; i < items.size(); i++)
+			if (x == items[i].getX() && y == items[i].getY()) return &items[i];
+		return 0;
+	}
 
 	int sx, sy;
 private:
