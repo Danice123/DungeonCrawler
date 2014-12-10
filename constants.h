@@ -120,7 +120,7 @@ const char MUSIC[] = "music";
 enum PATTERN_STEP_ACTION {NONE, UP, DOWN, LEFT, RIGHT, TRACK, EVADE, UPLEFT};
 
 // Game states
-enum GameStates {SPLASH_SCREEN, MENU, CHARACTER_SELECT, LEVEL1, END};
+enum GameStates {SPLASH_SCREEN, START_MENU, MENU, CHARACTER_SELECT, LEVEL1, END};
 
 // Menu Constants
 const int MENU_OFFSET = 125;

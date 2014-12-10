@@ -39,6 +39,7 @@ public:
     void render();      // "
     void releaseAll();
     void resetAll();
+	void gameStateUpdate();
 private:
 	TextureManager* textures;
 	TextDX text;
@@ -52,6 +53,9 @@ private:
 	int px, py;
 
 	Entity player;
+
+	GameStates gameStates;
+	float timeInState;
 };
 
 #endif
