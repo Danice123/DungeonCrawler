@@ -43,9 +43,6 @@ void Dungeon::loadFloor(int floor) {
 
 	player.x = gen.getFloor(floor).sx;
 	player.y = gen.getFloor(floor).sy;
-	player.getInventory().clear();
-	player.getInventory().push_back(ItemInstance(1, gen.getItemList()[0]));
-	player.setEquippedWeapon(0);
 
 	gameStates = SPLASH_SCREEN;
 	timeInState = 0;
@@ -109,6 +106,9 @@ void Dungeon::initialize(HWND hwnd) {
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
+	player.getInventory().clear();
+	player.getInventory().push_back(ItemInstance(1, gen.getItemList()[0]));
+	player.setEquippedWeapon(0);
 
 	activeMenu = false;
 	inventory = new Menu();
