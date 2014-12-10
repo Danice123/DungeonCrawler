@@ -1,7 +1,7 @@
  #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/person.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png" };
-const int nTextures = 7;
+const std::string images[] = { "img/tiles.png", "img/aliens.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png"};
+const int nTextures = 8;
 
 //=============================================================================
 // Constructor
@@ -97,7 +97,17 @@ void Dungeon::initialize(HWND hwnd) {
 	menuBG.initialize(graphics, 1, 1, 10, &textures[6]);
 
 
-	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 0, 0, 0, &textures[1]);
+	for (int i = 0; i < 100; i++) {
+		monsters[i].initialize(this, 32, 32, 3, &textures[1]);
+		if(i%2){
+			monsters[i].setFrameDelay(2.0f);
+			monsters[i].setFrames(0,2);
+		}
+		else{
+			monsters[i].setFrameDelay(2.0f);
+			monsters[i].setFrames(3,5);
+		}
+	}
 	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[3]);
 
 	loadFloor(0);
@@ -185,7 +195,11 @@ if(activeMenu) {
 	if (input->wasKeyPressed(VK_ESCAPE)) {
 		activeMenu = !activeMenu;
 	}
+	for(int a = 0; a<gen.getFloor(floor).getMonsters().size(); a++){
+		monsters[a].update(frameTime);
+	}
 	player.update(frameTime);
+	//for(int a =0; 
 	greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
 }
 
