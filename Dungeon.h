@@ -51,14 +51,13 @@ private:
 	MonsterEntity monsters[100];
 	Entity items[100];
 	int floor;
-	int px, py;
-
-
 	Hero player;
-
 
 	GameStates gameStates;
 	float timeInState;
+
+	Image redBar;
+	Image greenBar;
 
 };
 

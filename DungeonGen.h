@@ -16,6 +16,8 @@ public:
 
 	Floor& getFloor(int i) { return floors[i]; }
 	int getAmountFloors() { return nFloors; }
+
+	vector<Items>& getItemList() { return itemList; }
 private:
 	int nFloors;
 	Floor* floors;

@@ -1,8 +1,7 @@
- 
-#include "Dungeon.h"
+ #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/person.png", "img/hero_sprite_sheet.png" };
-const int nTextures = 3;
+const std::string images[] = { "img/tiles.png", "img/person.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png" };
+const int nTextures = 6;
 
 //=============================================================================
 // Constructor
@@ -42,8 +41,11 @@ void Dungeon::loadFloor(int floor) {
 		//set monster sprite
 	}
 
-	px = gen.getFloor(floor).sx;
-	py = gen.getFloor(floor).sy;
+	player.x = gen.getFloor(floor).sx;
+	player.y = gen.getFloor(floor).sy;
+	player.getInventory().clear();
+	player.getInventory().push_back(ItemInstance(1, gen.getItemList()[0]));
+	player.setEquippedWeapon(0);
 
 	gameStates = SPLASH_SCREEN;
 	timeInState = 0;
@@ -60,6 +62,17 @@ void Dungeon::initialize(HWND hwnd) {
 		if (!textures[i].initialize(graphics, images[i].c_str()))
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 	}
+
+	redBar.initialize(graphics, 0, 0, 0, &textures[4]);
+	redBar.setX(0);
+	redBar.setY(GAME_HEIGHT - 20);
+	redBar.setScaleX(200);
+	redBar.setScaleY(20);
+	greenBar.initialize(graphics, 0, 0, 0, &textures[5]);
+	greenBar.setX(0);
+	greenBar.setY(GAME_HEIGHT - 20);
+	greenBar.setScaleX(100);
+	greenBar.setScaleY(20);
 
 	gen.loadMonsters();
 	gen.loadItems();
@@ -83,7 +96,7 @@ void Dungeon::initialize(HWND hwnd) {
 	}
 
 	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 0, 0, 0, &textures[1]);
-	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[1]);
+	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[3]);
 
 	loadFloor(0);
 
@@ -102,61 +115,65 @@ bool turnTaken = false;
 //=============================================================================
 void Dungeon::update()
 {
-	if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(px, py - 1) != 0) {
-		if (gen.getFloor(floor).getTile(px, py - 1) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(px, py - 1) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(px, py - 1);
-			int damage = /*player.getAttack()*/1 - m->getArmor();
+	if (player.getHealth() <= 0) {
+		return;
+	}
+	if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
+		if (gen.getFloor(floor).getTile(player.x, player.y - 1) == 9) loadFloor(floor + 1);
+		if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
+			MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
+			int damage = player.getAttack() - m->getArmor();
 			m->setCurrentHealth(m->getCurrentHealth() - damage);
 		} else {
-			py--;
+			player.y--;
 		}
 		turnTaken = true;
 	}
-	if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(px, py + 1) != 0) {
-		if (gen.getFloor(floor).getTile(px, py + 1) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(px, py + 1) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(px, py + 1);
-			int damage = /*player.getAttack()*/1 - m->getArmor();
+	if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(player.x, player.y + 1) != 0) {
+		if (gen.getFloor(floor).getTile(player.x, player.y + 1) == 9) loadFloor(floor + 1);
+		if (gen.getFloor(floor).getMonster(player.x, player.y + 1) != 0) {
+			MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
+			int damage = player.getAttack() - m->getArmor();
 			m->setCurrentHealth(m->getCurrentHealth() - damage);
 		} else {
-			py++;
+			player.y++;
 		}
 		turnTaken = true;
 	}
-	if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(px + 1, py) != 0) {
-		player.setFrames(0,10);
+	if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
+		player.setFrames(0, 10);
 		player.setFacingRight(true);
 		player.flipHorizontal(!player.isFacingRight());
-		if (gen.getFloor(floor).getTile(px + 1, py) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(px + 1, py) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(px + 1, py);
-			int damage = /*player.getAttack()*/1 - m->getArmor();
+		if (gen.getFloor(floor).getTile(player.x + 1, player.y) == 9) loadFloor(floor + 1);
+		if (gen.getFloor(floor).getMonster(player.x + 1, player.y) != 0) {
+			MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
+			int damage = player.getAttack() - m->getArmor();
 			m->setCurrentHealth(m->getCurrentHealth() - damage);
 		} else {
-			px++;
+			player.x++;
 		}
 		turnTaken = true;
 	}
-	if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(px - 1, py) != 0) {
+	if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
 		player.setFrames(0,10);	
 		player.setFacingRight(false);
 		player.flipHorizontal(!player.isFacingRight());
 
-		if (gen.getFloor(floor).getTile(px - 1, py) == 9) loadFloor(floor + 1);
-		if (gen.getFloor(floor).getMonster(px - 1, py) != 0) {
-			MonsterInstance* m = gen.getFloor(floor).getMonster(px - 1, py);
-			int damage = /*player.getAttack()*/1 - m->getArmor();
+		if (gen.getFloor(floor).getTile(player.x - 1, player.y) == 9) loadFloor(floor + 1);
+		if (gen.getFloor(floor).getMonster(player.x - 1, player.y) != 0) {
+			MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
+			int damage = player.getAttack() - m->getArmor();
 			m->setCurrentHealth(m->getCurrentHealth() - damage);
 		} else {
-			px--;
+			player.x--;
 		}
 		turnTaken = true;
 	}
 	player.update(frameTime);
+	greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
 }
 
-//=============================================================================
+//=============================================================================sno
 // Artificial Intelligence
 //=============================================================================
 void Dungeon::ai()
@@ -166,15 +183,15 @@ void Dungeon::ai()
 			if (gen.getFloor(floor).getMonsters()[i].getCurrentHealth() <= 0) continue;
 			int mx = gen.getFloor(floor).getMonsters()[i].getX();
 			int my = gen.getFloor(floor).getMonsters()[i].getY();
-			int distance = sqrt(pow(px - mx, 2) + pow(py - my, 2));
+			int distance = sqrt(pow(player.x - mx, 2) + pow(player.y - my, 2));
 			if (distance < 10) {
-				AStar a(&gen.getFloor(floor), mx, my, px, py);
+				AStar a(&gen.getFloor(floor), mx, my, player.x, player.y);
 				a.run();
 				std::pair<int, int> c = a.getNextStep();
 				if (gen.getFloor(floor).getMonster(c.first, c.second) == 0)
-					if (px == c.first && py == c.second) {
-						int damage = gen.getFloor(floor).getMonsters()[i].getAttack() - 0/*player.getArmor();*/;
-						/*player.setCurrentHealth(player.getCurrentHealth() - damage);*/
+					if (player.x == c.first && player.y == c.second) {
+						int damage = gen.getFloor(floor).getMonsters()[i].getAttack() - player.getArmor();
+						player.setHealth(player.getHealth() - damage);
 					} else {
 						gen.getFloor(floor).getMonsters()[i].setCoords(c.first, c.second);
 					}
@@ -197,8 +214,8 @@ void Dungeon::collisions()
 //=============================================================================
 void Dungeon::render()
 {
-	int xoffset = px - GAME_WIDTH / 64;
-	int yoffset = py - GAME_HEIGHT / 64;
+	int xoffset = player.x - GAME_WIDTH / 64;
+	int yoffset = player.y - GAME_HEIGHT / 64;
 	graphics->spriteBegin();
 	for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
 		for (int j = 0; j < gen.getFloor(floor).getWidth(); j++) {
@@ -221,6 +238,8 @@ void Dungeon::render()
 	}
 
 	player.draw();
+	redBar.draw();
+	greenBar.draw();
 	graphics->spriteEnd();
 }
 
