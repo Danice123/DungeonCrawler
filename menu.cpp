@@ -193,9 +193,9 @@ void Menu::displayMenu(float frametime, int w, int a)
 		for(int i=0;i<items->size();++i) {
 			if(w == i || a == i) { catString = "+ "; }
 			if (linePtr==i) {	// Only highlight the active menu
-				menuItemFontHighlight->print(catString+(*items)[i].getName(), activeMenu->menuAnchor.x, activeMenu->menuAnchor.y+verticalOffset*(i+1));
+				menuItemFontHighlight->print(catString+(*items)[i].getName(), menuAnchor.x, menuAnchor.y+verticalOffset*(i+1));
 			} else {
-				menuItemFont->print(catString+(*items)[i].getName(), activeMenu->menuAnchor.x, activeMenu->menuAnchor.y+verticalOffset*(i+1));
+				menuItemFont->print(catString+(*items)[i].getName(), menuAnchor.x, menuAnchor.y+verticalOffset*(i+1));
 			}
 			catString = "";
 		}
