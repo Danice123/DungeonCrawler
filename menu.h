@@ -50,7 +50,6 @@ private:
    std::vector<ItemInstance>* items;
 
    float shift;
-
    int MODDER;
 
 public:
@@ -60,7 +59,7 @@ public:
 	void initialize(Graphics *g, Input *i, Menu* p, std::vector<ItemInstance>* v, std::string h);
 	void update();
 	int getSelectedItem() {return selectedItem;}
-	void displayMenu(float frametime);
+	void displayMenu(float frametime, int a=-1, int w=-1);
 	void setMenuHeading(std::string s) { menuHeading = s; }
 	std::vector<Menu*> getChildren() { return children; }
 	void setChildren(std::vector<Menu*> v) { children = v; }

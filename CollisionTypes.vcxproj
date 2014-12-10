@@ -100,6 +100,7 @@
     <ClCompile Include="image.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="particle.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="textDX.cpp" />
     <ClCompile Include="textureManager.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="astar.h" />
     <ClInclude Include="audio.h" />
     <ClInclude Include="DungeonGen.h" />
+    <ClInclude Include="entity.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Hero.h" />
     <ClInclude Include="ItemInstance.h" />
@@ -116,7 +118,6 @@
     <ClInclude Include="menu.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="constants.h" />
-    <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameError.h" />
     <ClInclude Include="graphics.h" />
@@ -126,6 +127,7 @@
     <ClInclude Include="MonsterEntity.h" />
     <ClInclude Include="MonsterInstance.h" />
     <ClInclude Include="OvalRoom.h" />
+    <ClInclude Include="particle.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="textDX.h" />
     <ClInclude Include="textureManager.h" />

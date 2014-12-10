@@ -72,6 +72,9 @@
     <ClCompile Include="Hero.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>Source Files\DungeonGen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h">
@@ -142,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="Hero.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
+      <Filter>Header Files\DungeonGen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
