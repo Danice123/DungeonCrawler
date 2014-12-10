@@ -13,6 +13,7 @@ class Menu;
 #include <sstream>
 #include <vector>
 #include "input.h"
+#include "ItemInstance.h"
 
 namespace menuNS
 { }
@@ -42,13 +43,19 @@ private:
    COLOR_ARGB normalColor;
    bool upDepressedLastFrame;
    bool downDepressedLastFrame;
+   bool dynamic;
    static int menuState;
    static int lastMenuState;
+   std::string heading;
+   std::vector<ItemInstance>* items;
+
+   const int MODDER = 100;
 
 public:
     // constructor
     Menu();
 	void initialize(Graphics *g, Input *i, Menu* p);
+	void initialize(Graphics *g, Input *i, Menu* p, std::vector<ItemInstance>* v, std::string h);
 	void update();
 	int getSelectedItem() {return selectedItem;}
 	void displayMenu(float frametime);
