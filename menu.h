@@ -49,7 +49,9 @@ private:
    std::string heading;
    std::vector<ItemInstance>* items;
 
-   static const int MODDER = 100;
+   float shift;
+
+   int MODDER;
 
 public:
     // constructor
@@ -69,6 +71,8 @@ public:
 	void setOffset(float o) { offset = o; }
 	void setOpacity(int o) { opacity = o; }
 	int getMenuState() { return menuState; }
+	int getAnchorX() { return menuAnchor.x; }
+	int getAnchorY() { return menuAnchor.y; }
 	
 };
 #endif

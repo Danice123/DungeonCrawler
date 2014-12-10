@@ -1,7 +1,7 @@
  #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/person.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png" };
-const int nTextures = 6;
+const std::string images[] = { "img/tiles.png", "img/person.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png" };
+const int nTextures = 7;
 
 //=============================================================================
 // Constructor
@@ -94,6 +94,8 @@ void Dungeon::initialize(HWND hwnd) {
 			mapImg[i][j].initialize(graphics, 32, 32, 10, &textures[0]);
 		}
 	}
+	menuBG.initialize(graphics, 1, 1, 10, &textures[6]);
+
 
 	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 0, 0, 0, &textures[1]);
 	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[3]);
@@ -107,6 +109,13 @@ void Dungeon::initialize(HWND hwnd) {
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
+
+	activeMenu = false;
+	inventory = new Menu();
+	inventory->initialize(graphics, input, NULL, &(gen.getFloor(floor).getItems()), "Inventory");
+	menuBG.setScaleX(200);
+	menuBG.setScaleY(GAME_HEIGHT);
+	menuBG.setX(inventory->getAnchorX()-20);
 }
 
 bool turnTaken = false;
@@ -115,6 +124,9 @@ bool turnTaken = false;
 //=============================================================================
 void Dungeon::update()
 {
+if(activeMenu) {
+	inventory->update();
+} else {
 	if (player.getHealth() <= 0) {
 		return;
 	}
@@ -169,11 +181,15 @@ void Dungeon::update()
 		}
 		turnTaken = true;
 	}
+}
+	if (input->wasKeyPressed(VK_ESCAPE)) {
+		activeMenu = !activeMenu;
+	}
 	player.update(frameTime);
 	greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
 }
 
-//=============================================================================sno
+//=============================================================================
 // Artificial Intelligence
 //=============================================================================
 void Dungeon::ai()
@@ -217,6 +233,7 @@ void Dungeon::render()
 	int xoffset = player.x - GAME_WIDTH / 64;
 	int yoffset = player.y - GAME_HEIGHT / 64;
 	graphics->spriteBegin();
+
 	for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
 		for (int j = 0; j < gen.getFloor(floor).getWidth(); j++) {
 			mapImg[i][j].setX((j - xoffset) * 32);
@@ -240,6 +257,10 @@ void Dungeon::render()
 	player.draw();
 	redBar.draw();
 	greenBar.draw();
+	if(activeMenu) {
+		menuBG.draw();
+		inventory->displayMenu(frameTime);
+	}
 	graphics->spriteEnd();
 }
 
