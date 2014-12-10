@@ -224,6 +224,9 @@ void Dungeon::update()
 		}
 		player.update(frameTime);
 		greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
+		for(int a = 0; a < gen.getFloor(floor).getMonsters().size(); a++){
+			monsters[a].update(frameTime);
+		}
 		break;	// End case
 
 	case SPLASH_SCREEN:
@@ -266,15 +269,6 @@ void Dungeon::update()
 		}
 		break;
 	}
-	if (input->wasKeyPressed(VK_ESCAPE)) {
-		activeMenu = !activeMenu;
-	}
-	for(int a = 0; a<gen.getFloor(floor).getMonsters().size(); a++){
-		monsters[a].update(frameTime);
-	}
-	player.update(frameTime);
-	//for(int a =0; 
-	greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
 }
 
 //=============================================================================
