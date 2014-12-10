@@ -8,6 +8,7 @@ int Menu::lastMenuState;
 Menu::Menu()
 {
 	MODDER = 100;
+	shift = 0;
 	selectedItem = -1;	//nothing return
 	menuItemFont = new TextDX();
 	menuHeadingFont = new TextDX();
@@ -100,17 +101,27 @@ void Menu::update()
 		menuState=0;
 		if (input->wasKeyPressed(VK_UP))
 		{
+			if(menuAnchor != D3DXVECTOR2(270,10)) {
+				shift += verticalOffset;
+			}
 			linePtr--;
 		}
 		if (input->wasKeyPressed(VK_DOWN))
 		{
 			linePtr++;
+			shift -= verticalOffset;
 		}
 
-		if (linePtr > (int)(items->size()-1))
+		if (linePtr > (int)(items->size()-1)) {
 			linePtr = 0;
-		if (linePtr < 0)
+			menuAnchor = D3DXVECTOR2(270,10);
+			shift = 0;
+		}
+		if (linePtr < 0) {
 			linePtr = items->size()-1;
+			if(items->size()>0)
+				menuAnchor = D3DXVECTOR2(270,10+(-verticalOffset*linePtr));
+		}
 
 		if (input->wasKeyPressed(VK_RETURN)) {
 			menuState = linePtr;
@@ -159,6 +170,14 @@ void Menu::displayMenu(float frametime)
 {	
 	if(dynamic) {
 		menuHeadingFont->print(heading, menuAnchor.x, menuAnchor.y);
+		if(shift < 0.0f) {
+			shift+=300.0f*frametime;
+			menuAnchor.y-=300.0f*frametime;
+		}
+		if(shift > 0.0f) {
+			shift-=300.0f*frametime;
+			menuAnchor.y+=300.0f*frametime;
+		}
 
 		for(int i=0;i<items->size();++i) {
 			if (linePtr==i)	// Only highlight the active menu
@@ -166,6 +185,7 @@ void Menu::displayMenu(float frametime)
 		else
 			menuItemFont->print((*items)[i].getName(), activeMenu->menuAnchor.x, activeMenu->menuAnchor.y+verticalOffset*(i+1));
 		}
+
 
 		if(this == activeMenu) {	// Constantly move to 0
 			if(activeMenu->getOffset() > 0)
