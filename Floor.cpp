@@ -40,6 +40,7 @@ void Floor::initializeRandom(std::vector<Monster>& tempM, std::vector<Items>& te
 				break;
 			case 2:
 				newRoom = new TreasureRoom();
+				break;
 			default:
 				newRoom = new Room();
 			}

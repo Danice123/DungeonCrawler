@@ -5,7 +5,7 @@
 class OvalRoom : public Room {
 public:
 	OvalRoom() : Room() {
-		maxItems = 3;
+		maxItems = 2;
 		maxMonsters = 2;
 	}
 

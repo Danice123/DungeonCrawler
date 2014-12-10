@@ -43,8 +43,6 @@ void Dungeon::loadFloor(int floor) {
 
 	player.x = gen.getFloor(floor).sx;
 	player.y = gen.getFloor(floor).sy;
-
-	timeInState = 0;
 }
 
 #include <time.h>
@@ -72,42 +70,19 @@ void Dungeon::initialize(HWND hwnd) {
 
 	gen.loadMonsters();
 	gen.loadItems();
-	srand(time(0));
-	gen.generateRandom(5);
 
-	int maxHeight = 0;
-	int maxWidth = 0;
-	for (int i = 0; i < gen.getAmountFloors(); i++) {
-		gen.getFloor(i).genFloorLayout();
-		if (maxHeight < gen.getFloor(i).getHeight()) maxHeight = gen.getFloor(i).getHeight();
-		if (maxWidth < gen.getFloor(i).getWidth()) maxWidth = gen.getFloor(i).getWidth();
-	}
-
-	mapImg = new Image*[maxHeight];
-	for (int i = 0; i < maxHeight; i++) {
-		mapImg[i] = new Image[maxWidth];
-		for (int j = 0; j < maxWidth; j++) {
-			mapImg[i][j].initialize(graphics, 32, 32, 10, &textures[0]);
-		}
-	}
 	menuBG.initialize(graphics, 1, 1, 10, &textures[6]);
 
 
 	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 0, 0, 0, &textures[1]);
 	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[3]);
 
-	loadFloor(0);
-
 	player.initialize(this, 50, 50, 11, &textures[2]);
-
 	player.setScale(32.0f/50.0f);
 	player.setFrameDelay(0.1f);
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
-	player.getInventory().clear();
-	player.getInventory().push_back(ItemInstance(1, gen.getItemList()[0]));
-	player.setEquippedWeapon(0);
 
 	activeMenu = false;
 	inventory = new Menu();
@@ -126,6 +101,7 @@ void Dungeon::initialize(HWND hwnd) {
 	menuItems.push_back("New Game");	// Menu 1
 	menuItems.push_back("Exit Game");	// Menu 2
 	mainMenu->setMenuItems(menuItems);
+	timeInState = 0;
 }
 
 bool turnTaken = false;
@@ -145,6 +121,7 @@ void Dungeon::update()
 			inventory->update();
 		} else {
 			if (player.getHealth() <= 0) { //Death
+				gameStates = START_MENU;
 				return;
 			}
 			if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
@@ -232,7 +209,32 @@ void Dungeon::update()
 		mainMenu->update();
 		switch(mainMenu->getMenuState()) {
 		case NEW_GAME:
+			{
+			srand(time(0));
+			gen.generateRandom(5);
+			int maxHeight = 0;
+			int maxWidth = 0;
+			for (int i = 0; i < gen.getAmountFloors(); i++) {
+				gen.getFloor(i).genFloorLayout();
+				if (maxHeight < gen.getFloor(i).getHeight()) maxHeight = gen.getFloor(i).getHeight();
+				if (maxWidth < gen.getFloor(i).getWidth()) maxWidth = gen.getFloor(i).getWidth();
+			}
+
+			mapImg = new Image*[maxHeight];
+			for (int i = 0; i < maxHeight; i++) {
+				mapImg[i] = new Image[maxWidth];
+				for (int j = 0; j < maxWidth; j++) {
+					mapImg[i][j].initialize(graphics, 32, 32, 10, &textures[0]);
+				}
+			}
+			loadFloor(0);
+			player.setHealth(player.getMaxHealth());
+			player.getInventory().clear();
+			player.getInventory().push_back(ItemInstance(1, gen.getItemList()[0]));
+			player.setEquippedWeapon(0);
+			player.setEquippedArmor(-1);
 			gameStates = LEVEL1;
+			}
 			break;
 		case EXIT_GAME:
 			exitGame();

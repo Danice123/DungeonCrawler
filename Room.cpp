@@ -8,7 +8,7 @@ Room::Room() {
 	adjRooms = 0;
 	id = rand() % 10000;
 
-	maxMonsters = 3;
+	maxMonsters = 2;
 	maxItems = 2;
 }
 
@@ -17,7 +17,7 @@ void Room::initializeRandom(std::vector<Monster>& tempM, std::vector<Items>& tem
 	width = 5 + rand() % 5;
 	height = 5 + rand() % 5;
 
-	int nMonsters = rand() % maxMonsters;
+	int nMonsters = maxMonsters != 0?rand() % maxMonsters:0;
 	for (int i = 0; i < nMonsters; i++) {
 		MonsterInstance m(level, tempM[rand() % tempM.size()]);
 		m.setCoords(rand() % width, rand() % height);
@@ -26,7 +26,7 @@ void Room::initializeRandom(std::vector<Monster>& tempM, std::vector<Items>& tem
 
 	int nItems = rand() % maxItems;
 	for (int i = 0; i < nItems; i++) {
-		ItemInstance m(level, tempI[rand() % tempM.size()]);
+		ItemInstance m(level, tempI[rand() % tempI.size()]);
 		m.setCoords(rand() % width, rand() % height);
 		items.push_back(m);
 	}
