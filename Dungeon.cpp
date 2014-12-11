@@ -157,6 +157,7 @@ void Dungeon::update()
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					pm.setCurrentFrame(damage);
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1); 
 				} else {
 					player.y--;
@@ -174,6 +175,7 @@ void Dungeon::update()
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					pm.setCurrentFrame(damage);
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.y++;
@@ -194,6 +196,7 @@ void Dungeon::update()
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					pm.setCurrentFrame(damage);
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.x++;
@@ -215,6 +218,7 @@ void Dungeon::update()
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					pm.setCurrentFrame(damage);
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.x--;

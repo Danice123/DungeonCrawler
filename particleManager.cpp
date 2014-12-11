@@ -35,7 +35,12 @@ void ParticleManager::createParticleEffect(VECTOR2 pos, VECTOR2 vel, int numPart
 	setVelocity(vel);
 	setVisibleNParticles(numParticles);
 }
-
+void ParticleManager::setCurrentFrame(int damage){
+	for (int i = 0; i < MAX_NUMBER_PARTICLES; i++)
+	{
+		particles[i].setCurrentFrame(damage);
+	}
+}
 
 void ParticleManager::setVisibleNParticles(int n)
 {
@@ -71,9 +76,8 @@ bool ParticleManager::initialize(Graphics *g)
 		particles[i].setActive(false);
 		particles[i].setVisible(false);
 		particles[i].setScale(.5f);
-		particles[i].setCurrentFrame(2);
+		particles[i].setCurrentFrame(0);
 		particles[i].setRotationValue(0.0f);
-		
 	}
 	return true;
 }

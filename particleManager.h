@@ -21,6 +21,7 @@ public:
 	~ParticleManager();
 	void ParticleManager::createParticleEffect(VECTOR2, VECTOR2, int);
 	void ParticleManager::setCurrentFrame(int, int);
+	void ParticleManager::setCurrentFrame(int);
 	void ParticleManager::setInvisibleAllParticles();
 	void ParticleManager::setVisibleNParticles(int n);
 	void ParticleManager::setPosition(VECTOR2 pos) {position = pos;}
