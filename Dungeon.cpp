@@ -116,6 +116,8 @@ void Dungeon::initialize(HWND hwnd) {
 	menuItems.push_back("Exit Game");	// Menu 2
 	mainMenu->setMenuItems(menuItems);
 	timeInState = 0;
+	audio->playCue("themeMusic");
+	
 }
 
 bool turnTaken = false;
@@ -157,6 +159,7 @@ void Dungeon::update()
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					audio->playCue("hit");
 					pm.setCurrentFrame(damage);
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1); 
 				} else {
@@ -176,6 +179,7 @@ void Dungeon::update()
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 					pm.setCurrentFrame(damage);
+					audio->playCue("hit");
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.y++;
@@ -197,6 +201,7 @@ void Dungeon::update()
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 					pm.setCurrentFrame(damage);
+					audio->playCue("hit");
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.x++;
@@ -219,6 +224,7 @@ void Dungeon::update()
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 					pm.setCurrentFrame(damage);
+					audio->playCue("hit");
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.x--;

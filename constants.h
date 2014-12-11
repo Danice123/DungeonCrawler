@@ -111,14 +111,15 @@ const UCHAR PADDLE_DOWN = VK_DOWN;
 
 // audio files required by audio.cpp
 // WAVE_BANK must be location of .xwb file.
-const char WAVE_BANK[]  = "audio\\Win\\stick_wave_bank.xwb";
+const char WAVE_BANK[]  = "audio\\Win\\DungeonCrawlerBank.xwb";
 // SOUND_BANK must be location of .xsb file.
-const char SOUND_BANK[] = "audio\\Win\\stick_sound_bank.xsb";
+const char SOUND_BANK[] = "audio\\Win\\DungeonCrawlerSound.xsb";
 
 // audio cues
 const char PUNCH[] = "punch_hit";
 const char SWORD[] = "sword_hit";
-const char MUSIC[] = "music";
+const char MUSIC[] = "audio/themeMusic";
+const char HIT[] = "audio/hit";
 
 // Pattern Step Action
 enum PATTERN_STEP_ACTION {NONE, UP, DOWN, LEFT, RIGHT, TRACK, EVADE, UPLEFT};
