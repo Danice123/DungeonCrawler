@@ -139,7 +139,7 @@ void Dungeon::update()
 					break;
 				case 2:	// Health
 					player.setHealth(player.getHealth()+player.getInventory()[inventory->getMenuState()].getValue());
-					player.getInventory().erase(player.getInventory().begin()+inventory->getMenuState());
+					player.getInventory().erase(player.getInventory().begin() + inventory->getMenuState());
 					break;
 				}
 			}
@@ -160,7 +160,7 @@ void Dungeon::update()
 						player.getInventory().push_back(*i);
 						i->isOnGround = false;
 					}
-					if (gen.getFloor(floor).getTile(player.x, player.y - 1) == 9) loadFloor(floor + 1);
+					if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
 				}
 				turnTaken = true;
 			}
@@ -176,7 +176,7 @@ void Dungeon::update()
 						player.getInventory().push_back(*i);
 						i->isOnGround = false;
 					}
-					if (gen.getFloor(floor).getTile(player.x, player.y + 1) == 9) loadFloor(floor + 1);
+					if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
 				}
 				turnTaken = true;
 			}
@@ -195,7 +195,7 @@ void Dungeon::update()
 						player.getInventory().push_back(*i);
 						i->isOnGround = false;
 					}
-					if (gen.getFloor(floor).getTile(player.x + 1, player.y) == 9) loadFloor(floor + 1);
+					if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
 				}
 				turnTaken = true;
 			}
@@ -214,7 +214,7 @@ void Dungeon::update()
 						player.getInventory().push_back(*i);
 						i->isOnGround = false;
 					}
-					if (gen.getFloor(floor).getTile(player.x - 1, player.y) == 9) loadFloor(floor + 1);
+					if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
 				}
 				turnTaken = true;
 			}

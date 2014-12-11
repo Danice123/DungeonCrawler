@@ -175,6 +175,18 @@ void Menu::update()
 	}
 }
 
+std::string getPostfix(ItemInstance item) {
+	switch(item.getType()) {
+	case 0:
+		return "- Damage: " + std::to_string(item.getValue());
+	case 1:
+		return "- Armor: " + std::to_string(item.getValue());
+	case 2:
+		return "- Heals for " + std::to_string(item.getValue()) + " health";
+	}
+	return "";
+}
+
 
 void Menu::displayMenu(float frametime, int w, int a)
 {	
@@ -193,9 +205,9 @@ void Menu::displayMenu(float frametime, int w, int a)
 		for(int i=0;i<items->size();++i) {
 			if(w == i || a == i) { catString = "+ "; }
 			if (linePtr==i) {	// Only highlight the active menu
-				menuItemFontHighlight->print(catString+(*items)[i].getName(), menuAnchor.x, menuAnchor.y+verticalOffset*(i+1));
+				menuItemFontHighlight->print(catString+(*items)[i].getName() + getPostfix((*items)[i]), menuAnchor.x, menuAnchor.y+verticalOffset*(i+1));
 			} else {
-				menuItemFont->print(catString+(*items)[i].getName(), menuAnchor.x, menuAnchor.y+verticalOffset*(i+1));
+				menuItemFont->print(catString+(*items)[i].getName() + getPostfix((*items)[i]), menuAnchor.x, menuAnchor.y+verticalOffset*(i+1));
 			}
 			catString = "";
 		}

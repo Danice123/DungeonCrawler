@@ -16,7 +16,7 @@ public:
 		delete [] map;
 	}
 
-	void initializeRandom(std::vector<Monster>&, std::vector<Items>&);
+	void initializeRandom(int, std::vector<Monster>&, std::vector<Items>&);
 	void initializeFromFile(std::ifstream&, std::vector<Monster>&, std::vector<Items>&);
 
 	void genFloorLayout();

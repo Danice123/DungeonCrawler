@@ -4,7 +4,7 @@
 using std::cout;
 using std::endl;
 
-void Floor::initializeRandom(std::vector<Monster>& tempM, std::vector<Items>& tempI) {
+void Floor::initializeRandom(int level, std::vector<Monster>& tempM, std::vector<Items>& tempI) {
 	initialized = true;
 	std::queue<Room*> rl;
 	int mRooms = rand() % 10 + 10;
@@ -19,7 +19,9 @@ void Floor::initializeRandom(std::vector<Monster>& tempM, std::vector<Items>& te
 		rl.pop();
 		cout << "Expanding: " << r->id << endl;
 
-		int adjRooms = rand() % (mRooms - nRooms < 4 - r->getAdjRooms()?mRooms - nRooms:4 - r->getAdjRooms()) + 1;
+		int adjRooms = 0;
+		if (4 - r->getAdjRooms() != 0)
+			adjRooms = rand() % (mRooms - nRooms < 4 - r->getAdjRooms()?mRooms - nRooms:4 - r->getAdjRooms()) + 1;
 		cout << "Adding " << adjRooms << " Rooms" << endl;
 
 		int side = rand() % 4;
