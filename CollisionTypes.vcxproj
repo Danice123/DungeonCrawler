@@ -101,6 +101,7 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="particle.cpp" />
+    <ClCompile Include="particleManager.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="textDX.cpp" />
     <ClCompile Include="textureManager.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="MonsterInstance.h" />
     <ClInclude Include="OvalRoom.h" />
     <ClInclude Include="particle.h" />
+    <ClInclude Include="particleManager.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="textDX.h" />
     <ClInclude Include="textureManager.h" />

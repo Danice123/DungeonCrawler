@@ -3,6 +3,8 @@
 const std::string images[] = { "img/tiles.png", "img/aliens.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png"};
 const int nTextures = 8;
 
+
+
 //=============================================================================
 // Constructor
 //=============================================================================
@@ -71,6 +73,8 @@ void Dungeon::initialize(HWND hwnd) {
 	gen.loadMonsters();
 	gen.loadItems();
 
+	pm.initialize(graphics);
+	pm.setCurrentFrame(0, 0);
 	menuBG.initialize(graphics, 1, 1, 10, &textures[6]);
 
 
@@ -153,6 +157,7 @@ void Dungeon::update()
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1); 
 				} else {
 					player.y--;
 					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
@@ -169,6 +174,7 @@ void Dungeon::update()
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.y++;
 					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
@@ -188,6 +194,7 @@ void Dungeon::update()
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.x++;
 					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
@@ -203,10 +210,12 @@ void Dungeon::update()
 				player.setFrames(0,10);	
 				player.setFacingRight(false);
 				player.flipHorizontal(!player.isFacingRight());
+
 				if (gen.getFloor(floor).getMonster(player.x - 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
+					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
 				} else {
 					player.x--;
 					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
@@ -227,6 +236,7 @@ void Dungeon::update()
 		for(int a = 0; a < gen.getFloor(floor).getMonsters().size(); a++){
 			monsters[a].update(frameTime);
 		}
+		pm.update(frameTime);
 		break;	// End case
 
 	case SPLASH_SCREEN:
@@ -347,6 +357,7 @@ void Dungeon::render()
 		player.draw();
 		redBar.draw();
 		greenBar.draw();
+		pm.draw();
 		if(activeMenu) {
 			menuBG.draw();
 			inventory->displayMenu(frameTime,player.getEquippedArmor(),player.getEquippedWeapon());

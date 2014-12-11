@@ -75,6 +75,9 @@
     <ClCompile Include="particle.cpp">
       <Filter>Source Files\DungeonGen</Filter>
     </ClCompile>
+    <ClCompile Include="particleManager.cpp">
+      <Filter>Source Files\DungeonGen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h">
@@ -147,6 +150,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="particle.h">
+      <Filter>Header Files\DungeonGen</Filter>
+    </ClInclude>
+    <ClInclude Include="particleManager.h">
       <Filter>Header Files\DungeonGen</Filter>
     </ClInclude>
   </ItemGroup>

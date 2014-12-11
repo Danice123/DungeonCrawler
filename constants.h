@@ -94,6 +94,10 @@ const RECT  COLLISION_BOX_PADDLE = {-45,-10,45,10};
 const RECT COLLISION_BOX_PUCK = {-32, -32, 32, 32};
 const float   COLLISION_RADIUS = 29;
 
+//Particles
+const int MAX_NUMBER_PARTICLES = 5;
+const float MAX_PARTICLE_LIFETIME = 2.0f;
+
 // key mappings
 // In this game simple constants are used for key mappings. If variables were used
 // it would be possible to save and restore key mappings from a data file.

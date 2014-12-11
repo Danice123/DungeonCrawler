@@ -19,7 +19,7 @@ class Dungeon;
 #include "astar.h"
 #include <cmath>
 #include "Hero.h"
-
+#include "particleManager.h"
 //=============================================================================
 // This class is the core of the game
 //=============================================================================
@@ -60,7 +60,7 @@ private:
 	Image menuBG;
 	GameStates gameStates;
 	float timeInState;
-
+	ParticleManager pm;
 	Image redBar;
 	Image greenBar;
 
