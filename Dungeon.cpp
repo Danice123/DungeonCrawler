@@ -100,7 +100,7 @@ void Dungeon::initialize(HWND hwnd) {
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
-
+	player.setFacing(EAST);
 	activeMenu = false;
 	inventory = new Menu();
 	inventory->initialize(graphics, input, NULL, &(player.getInventory()), "Inventory");
@@ -175,6 +175,7 @@ void Dungeon::update()
 				return;
 			}
 			if (!turnTaken &&!isWalking && input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
+				player.setFacing(NORTH);
 				if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
 					int damage = player.getAttack() - m->getArmor();
@@ -184,7 +185,7 @@ void Dungeon::update()
 					pm.createParticleEffect(VECTOR2(player.getX(), player.getY()-32), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
-					player.setFacing(NORTH);
+					
 					player.offset = 0;
 					isWalking = true;
 				}
@@ -206,8 +207,8 @@ void Dungeon::update()
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
 				player.setFrames(0, 10);
-				if(player.getFacing() == WEST){
-					player.flipHorizontal(true);
+				if(player.getFacing() != EAST){
+					player.flipHorizontal(false);
 				}
 				player.setFacing(EAST);
 
@@ -227,7 +228,7 @@ void Dungeon::update()
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
 				player.setFrames(0,10);
-				if(player.getFacing()== EAST){
+				if(player.getFacing()!= WEST){
 					player.flipHorizontal(true);
 				}
 				player.setFacing(WEST);
