@@ -199,6 +199,7 @@ void Dungeon::update()
 			}
 			if (!turnTaken &&!isWalking && input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
 				player.setFacing(NORTH);
+				player.setCurrentFrame(14);
 				if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
 					int damage = player.getAttack() - m->getArmor();
@@ -215,6 +216,7 @@ void Dungeon::update()
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(player.x, player.y + 1) != 0) {
 				player.setFacing(SOUTH);
+				player.setCurrentFrame(17);
 				if (gen.getFloor(floor).getMonster(player.x, player.y + 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
 					int damage = player.getAttack() - m->getArmor();
