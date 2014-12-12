@@ -303,6 +303,16 @@ void Dungeon::update()
 			break;
 		case BIRMINGHAM:
 			birmingham = !birmingham;
+			if(birmingham) {
+				std::vector<std::string> items = mainMenu->getMenuItems();
+				items[1] = "+ Toggle Invincibility";
+				mainMenu->setMenuItems(items);
+			}
+			else {
+				std::vector<std::string> items = mainMenu->getMenuItems();
+				items[1] = " Toggle Invincibility";
+				mainMenu->setMenuItems(items);
+			}
 			break;
 		}
 		break;
