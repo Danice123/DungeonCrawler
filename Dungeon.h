@@ -64,6 +64,7 @@ private:
 	GameStates gameStates;
 	float timeInState;
 	ParticleManager pm;
+	ParticleManager ppm;
 	Image redBar;
 	Image greenBar;
 	int bodyCount;

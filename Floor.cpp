@@ -11,7 +11,7 @@ void Floor::initializeRandom(int level, std::vector<Monster>& tempM, std::vector
 	int nRooms = 1;
 	stairRoom = rand() % mRooms;
 	spawn = new Room();
-	spawn->initializeRandom(tempM, tempI, 1);
+	spawn->initializeRandom(tempM, tempI, level);
 	rl.push(spawn);
 	cout << "Spawn: " << spawn->id << endl;
 	do {
@@ -46,7 +46,7 @@ void Floor::initializeRandom(int level, std::vector<Monster>& tempM, std::vector
 			default:
 				newRoom = new Room();
 			}
-			newRoom->initializeRandom(tempM, tempI, 1);
+			newRoom->initializeRandom(tempM, tempI, level);
 			r->setRoom((dir) side, newRoom);
 			newRoom->setRoom((dir) (side % 2 == 1?side - 1:side + 1), r);
 			rl.push(newRoom);
@@ -119,9 +119,9 @@ void Floor::genFloorLayout() {
 			nr->y = r->y - nr->getHeight() - randDist();
 			rl.push_back(nr);
 
-			if (up > nr->y) up = nr->y - 1;
+			if (up > nr->y - 1) up = nr->y - 1;
 			if (down < nr->y + nr->getHeight() + 1) down = nr->y + nr->getHeight() + 1;
-			if (left > nr->x) left = nr->x - 1;
+			if (left > nr->x - 1) left = nr->x - 1;
 			if (right < nr->x + nr->getWidth() + 1) right = nr->x + nr->getWidth() + 1;
 		}
 
@@ -131,9 +131,9 @@ void Floor::genFloorLayout() {
 			nr->y = r->y + r->getHeight() + randDist();
 			rl.push_back(nr);
 
-			if (up > nr->y) up = nr->y - 1;
+			if (up > nr->y - 1) up = nr->y - 1;
 			if (down < nr->y + nr->getHeight() + 1) down = nr->y + nr->getHeight() + 1;
-			if (left > nr->x) left = nr->x - 1;
+			if (left > nr->x - 1) left = nr->x - 1;
 			if (right < nr->x + nr->getWidth() + 1) right = nr->x + nr->getWidth() + 1;
 		}
 
@@ -143,9 +143,9 @@ void Floor::genFloorLayout() {
 			nr->y = r->y;
 			rl.push_back(nr);
 
-			if (up > nr->y) up = nr->y - 1;
+			if (up > nr->y - 1) up = nr->y - 1;
 			if (down < nr->y + nr->getHeight() + 1) down = nr->y + nr->getHeight() + 1;
-			if (left > nr->x) left = nr->x - 1;
+			if (left > nr->x - 1) left = nr->x - 1;
 			if (right < nr->x + nr->getWidth() + 1) right = nr->x + nr->getWidth() + 1;
 		}
 
@@ -155,9 +155,9 @@ void Floor::genFloorLayout() {
 			nr->y = r->y;
 			rl.push_back(nr);
 
-			if (up > nr->y) up = nr->y - 1;
+			if (up > nr->y - 1) up = nr->y - 1;
 			if (down < nr->y + nr->getHeight() + 1) down = nr->y + nr->getHeight() + 1;
-			if (left > nr->x) left = nr->x - 1;
+			if (left > nr->x - 1) left = nr->x - 1;
 			if (right < nr->x + nr->getWidth() + 1) right = nr->x + nr->getWidth() + 1;
 		}
 	} while(index < rl.size());
