@@ -5,7 +5,7 @@
 
 ParticleManager::ParticleManager()
 {
-	srand(time(NULL));
+	//srand(time(NULL));
 }
 ParticleManager::~ParticleManager()
 {

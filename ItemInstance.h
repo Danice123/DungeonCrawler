@@ -4,10 +4,10 @@
 
 class ItemInstance {
 public:
-	ItemInstance(int level, Items i) {
+	ItemInstance(Items i) {
 		name = i.getName();
 		type = i.getType();
-		value = i.getValue() * i.getScale() * level;
+		value = i.getValue();
 		isOnGround = true;
 	}
 

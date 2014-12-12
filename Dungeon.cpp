@@ -21,6 +21,13 @@ Dungeon::~Dungeon()
 }
 
 void Dungeon::loadFloor(int floor) {
+	if (floor == 1) {
+		floor = 0;
+		gen.loadFromFile("Boss.txt");
+		for (int i = 0; i < gen.getAmountFloors(); i++) gen.getFloor(i).genFloorLayout();
+		gameStates = LEVEL5;
+	}
+	
 	this->floor = floor;
 	for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
 		for (int j = 0; j < gen.getFloor(floor).getWidth(); j++)
@@ -40,7 +47,7 @@ void Dungeon::loadFloor(int floor) {
 			}
 
 	for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
-		//set monster sprite
+
 	}
 
 	player.x = gen.getFloor(floor).sx;
@@ -134,11 +141,11 @@ void Dungeon::update()
 {
 	gameStateUpdate();
 	switch(gameStates) {
+	case LEVEL5:
 	case LEVEL1:
 	case LEVEL2:
 	case LEVEL3:
 	case LEVEL4:
-	case LEVEL5:
 		if(activeMenu) {
 			inventory->update();
 			if(inventory->getMenuState() != -1) {
@@ -270,7 +277,7 @@ void Dungeon::update()
 			loadFloor(0);
 			player.setHealth(player.getMaxHealth());
 			player.getInventory().clear();
-			player.getInventory().push_back(ItemInstance(1, gen.getItemList()[0]));
+			player.getInventory().push_back(ItemInstance(gen.getItemList()[0]));
 			player.setEquippedWeapon(0);
 			player.setEquippedArmor(-1);
 			gameStates = LEVEL1;
@@ -320,7 +327,6 @@ void Dungeon::ai()
 		}
 		moffset = 0;
 		isWalking = true;
-		//turnTaken = false;
 	}
 }
 

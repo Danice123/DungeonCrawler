@@ -18,17 +18,35 @@ void Room::initializeRandom(std::vector<Monster>& tempM, std::vector<Items>& tem
 	height = 5 + rand() % 5;
 
 	int nMonsters = maxMonsters != 0?rand() % maxMonsters:0;
+	std::vector<Monster> vm;
+	for (int i = 0; i < tempM.size(); i++) {
+		if (tempM[i].getScale() <= level) vm.push_back(tempM[i]);
+	}
+
 	for (int i = 0; i < nMonsters; i++) {
-		MonsterInstance m(level, tempM[rand() % tempM.size()]);
+		MonsterInstance m(vm[rand() % vm.size()]);
 		m.setCoords(rand() % width, rand() % height);
 		monsters.push_back(m);
 	}
 
 	int nItems = rand() % maxItems;
+	std::vector<Items> wal;
+	std::vector<Items> ol;
+	for (int i = 0; i < tempI.size(); i++) {
+		if (tempI[i].getType() == 2) {
+			if (tempI[i].getScale() <= level) ol.push_back(tempI[i]);
+		} else if (tempI[i].getScale() <= level) wal.push_back(tempI[i]);
+	}
+
 	for (int i = 0; i < nItems; i++) {
-		ItemInstance m(level, tempI[rand() % tempI.size()]);
-		m.setCoords(rand() % width, rand() % height);
-		items.push_back(m);
+		ItemInstance* m;
+		if (rand() % 100 < 20) {
+			m = new ItemInstance(wal[rand() % wal.size()]);
+		} else  {
+			m = new ItemInstance(ol[rand() % ol.size()]);
+		}
+		m->setCoords(rand() % width, rand() % height);
+		items.push_back(*m);
 	}
 }
 
@@ -45,7 +63,7 @@ void Room::initializeFromFile(std::ifstream& fin, std::vector<Monster>& temp, st
 		MonsterInstance* m = 0;
 		for (int i = 0; i < temp.size(); i++) {
 			if (!name.compare(temp[i].getName()))
-				m = new MonsterInstance(level, temp[i]);
+				m = new MonsterInstance(temp[i]);
 		}
 		if (m == 0) throw "bad monster name";
 		int x, y;
@@ -63,7 +81,7 @@ void Room::initializeFromFile(std::ifstream& fin, std::vector<Monster>& temp, st
 		ItemInstance* m = 0;
 		for (int i = 0; i < temp2.size(); i++) {
 			if (!name.compare(temp2[i].getName()))
-				m = new ItemInstance(level, temp2[i]);
+				m = new ItemInstance(temp2[i]);
 		}
 		if (m == 0) throw "bad item name";
 		int x, y;
