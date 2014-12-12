@@ -111,7 +111,7 @@ void Dungeon::initialize(HWND hwnd) {
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
-
+	player.setFacing(EAST);
 	activeMenu = false;
 	inventory = new Menu();
 	inventory->initialize(graphics, input, NULL, &(player.getInventory()), "Inventory");
@@ -201,8 +201,8 @@ void Dungeon::update()
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
 				player.setFrames(0, 10);
-				if(player.getFacing() == WEST){
-					player.flipHorizontal(true);
+				if(player.getFacing() != EAST){
+					player.flipHorizontal(false);
 				}
 				player.setFacing(EAST);
 
@@ -222,7 +222,7 @@ void Dungeon::update()
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
 				player.setFrames(0,10);
-				if(player.getFacing()== EAST){
+				if(player.getFacing()!= WEST){
 					player.flipHorizontal(true);
 				}
 				player.setFacing(WEST);
