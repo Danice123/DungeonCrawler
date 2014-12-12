@@ -21,7 +21,7 @@ Dungeon::~Dungeon()
 }
 
 void Dungeon::loadFloor(int floor) {
-	if (floor == 1) {
+	if (floor == 5) {
 		floor = 0;
 		gen.loadFromFile("Boss.txt");
 		for (int i = 0; i < gen.getAmountFloors(); i++) gen.getFloor(i).genFloorLayout();
@@ -351,6 +351,9 @@ void Dungeon::ai()
 					if (player.x == c.first && player.y == c.second) {
 						int damage = gen.getFloor(floor).getMonsters()[i].getAttack() - player.getArmor();
 						player.setHealth(player.getHealth() - damage);
+						pm.setCurrentFrame(damage);
+						audio->playCue("hit");
+						pm.createParticleEffect(VECTOR2(player.getX(), player.getY()), VECTOR2(0,100), 1);
 					} else {
 						if (gen.getFloor(floor).getMonsters()[i].getX() < c.first) monsters[i].facing = EAST;
 						if (gen.getFloor(floor).getMonsters()[i].getX() > c.first) monsters[i].facing = WEST;
@@ -399,8 +402,8 @@ void Dungeon::render()
 						i->isOnGround = false;
 					}
 				if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
-				player.setCurrentFrame(3);
-				player.setFrames(3, 3);
+				player.setCurrentFrame(12);
+				player.setFrames(12, 12);
 				turnTaken = true;
 			}
 			break;
@@ -415,8 +418,8 @@ void Dungeon::render()
 						i->isOnGround = false;
 					}
 				if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
-				player.setCurrentFrame(3);
-				player.setFrames(3, 3);
+				player.setCurrentFrame(20);
+				player.setFrames(20, 20);
 				turnTaken = true;
 			}
 			break;
