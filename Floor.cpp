@@ -9,7 +9,7 @@ void Floor::initializeRandom(int level, std::vector<Monster>& tempM, std::vector
 	std::queue<Room*> rl;
 	int mRooms = rand() % 10 + 10;
 	int nRooms = 1;
-	stairRoom = rand() % mRooms;
+	stairRoom = 0; //rand() % mRooms;
 	spawn = new Room();
 	spawn->initializeRandom(tempM, tempI, 1);
 	rl.push(spawn);
@@ -36,7 +36,7 @@ void Floor::initializeRandom(int level, std::vector<Monster>& tempM, std::vector
 				continue;
 			}
 			Room* newRoom;
-			switch (rand() % 3) {
+			switch (rand() % 2) {
 			case 1:
 				newRoom = new OvalRoom();
 				break;
@@ -121,7 +121,7 @@ void Floor::genFloorLayout() {
 
 			if (up > nr->y) up = nr->y - 1;
 			if (down < nr->y + nr->getHeight() + 1) down = nr->y + nr->getHeight() + 1;
-			if (left > nr->x) left = nr->x;
+			if (left > nr->x) left = nr->x - 1;
 			if (right < nr->x + nr->getWidth() + 1) right = nr->x + nr->getWidth() + 1;
 		}
 
@@ -131,9 +131,9 @@ void Floor::genFloorLayout() {
 			nr->y = r->y + r->getHeight() + randDist();
 			rl.push_back(nr);
 
-			if (up > nr->y) up = nr->y;
+			if (up > nr->y) up = nr->y - 1;
 			if (down < nr->y + nr->getHeight() + 1) down = nr->y + nr->getHeight() + 1;
-			if (left > nr->x) left = nr->x;
+			if (left > nr->x) left = nr->x - 1;
 			if (right < nr->x + nr->getWidth() + 1) right = nr->x + nr->getWidth() + 1;
 		}
 
@@ -143,9 +143,9 @@ void Floor::genFloorLayout() {
 			nr->y = r->y;
 			rl.push_back(nr);
 
-			if (up > nr->y) up = nr->y;
+			if (up > nr->y) up = nr->y - 1;
 			if (down < nr->y + nr->getHeight() + 1) down = nr->y + nr->getHeight() + 1;
-			if (left > nr->x) left = nr->x;
+			if (left > nr->x) left = nr->x - 1;
 			if (right < nr->x + nr->getWidth() + 1) right = nr->x + nr->getWidth() + 1;
 		}
 
@@ -155,7 +155,7 @@ void Floor::genFloorLayout() {
 			nr->y = r->y;
 			rl.push_back(nr);
 
-			if (up > nr->y) up = nr->y;
+			if (up > nr->y) up = nr->y - 1;
 			if (down < nr->y + nr->getHeight() + 1) down = nr->y + nr->getHeight() + 1;
 			if (left > nr->x) left = nr->x - 1;
 			if (right < nr->x + nr->getWidth() + 1) right = nr->x + nr->getWidth() + 1;

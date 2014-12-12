@@ -4,12 +4,12 @@
 
 class MonsterInstance {
 public:
-	MonsterInstance(int level, Monster m) {
+	MonsterInstance(Monster m) {
 		name = m.getName();
-		health = m.getHealth() * m.getScale() * level;
+		health = m.getHealth();
 		currentHealth = health;
-		attack = m.getAttack() * m.getScale() * level;
-		armor = m.getArmor() * m.getScale() * level;
+		attack = m.getAttack();
+		armor = m.getArmor();
 	}
 
 	std::string getName() { return name; }
