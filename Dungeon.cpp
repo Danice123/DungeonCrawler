@@ -131,6 +131,13 @@ void Dungeon::update()
 		if(activeMenu) {
 			inventory->update();
 			if(inventory->getMenuState() != -1) {
+				if(player.getEquippedArmor() > inventory->getMenuState()) {
+					player.setEquippedArmor(player.getEquippedArmor()-1);
+				}
+				if(player.getEquippedWeapon() > inventory->getMenuState()) {
+					player.setEquippedWeapon(player.getEquippedWeapon()-1);
+				}
+
 				switch(player.getInventory()[inventory->getMenuState()].getType()) {
 				case 0:	// Weapon
 					player.setEquippedWeapon(inventory->getMenuState());
@@ -146,7 +153,7 @@ void Dungeon::update()
 			}
 		} else {
 			if (player.getHealth() <= 0) { //Death
-				gameStates = START_MENU;
+				gameStates = GAME_OVER;
 				return;
 			}
 			if (!turnTaken &&!isWalking && input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
@@ -467,6 +474,9 @@ void Dungeon::render()
 	case START_MENU:
 		mainMenu->displayMenu(frameTime);
 		break;
+	case GAME_OVER:
+		gameStates = START_MENU;
+		break;
 	}
 	graphics->spriteEnd();
 }
@@ -487,7 +497,15 @@ void Dungeon::gameStateUpdate()
 
 		break;
 	case LEVEL1:
+	case LEVEL2:
+	case LEVEL3:
+	case LEVEL4:
+	case LEVEL5:
 		timeInState = 0;
+		break;
+		
+	case GAME_OVER:
+
 		break;
 	}
 }
