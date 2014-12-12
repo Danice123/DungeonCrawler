@@ -1,7 +1,7 @@
  #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/enemy.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png"};
-const int nTextures = 8;
+const std::string images[] = { "img/tiles.png", "img/enemy.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png", "img/han.jpg" };
+const int nTextures = 9;
 
 
 
@@ -75,7 +75,8 @@ void Dungeon::initialize(HWND hwnd) {
 
 	pm.initialize(graphics);
 	pm.setCurrentFrame(0, 0);
-	menuBG.initialize(graphics, 1, 1, 10, &textures[6]);
+	menuBG.initialize(graphics, 1, 1, 1, &textures[6]);
+	gameOver.initialize(graphics,640,480,1,&textures[8]);
 
 
 	for (int i = 0; i < 100; i++) 
@@ -270,6 +271,10 @@ void Dungeon::update()
 			exitGame();
 			break;
 		}
+		break;
+	case GAME_OVER:
+		if(input->wasKeyPressed(VK_SPACE))
+			gameStates = START_MENU;
 		break;
 	}
 }
@@ -476,7 +481,7 @@ void Dungeon::render()
 		mainMenu->displayMenu(frameTime);
 		break;
 	case GAME_OVER:
-		gameStates = START_MENU;
+		gameOver.draw();
 		break;
 	}
 	graphics->spriteEnd();

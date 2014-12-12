@@ -58,6 +58,7 @@ private:
 	std::vector<ItemInstance> inventoryItems;
 	bool activeMenu;
 	Image menuBG;
+	Image gameOver;
 	GameStates gameStates;
 	float timeInState;
 	ParticleManager pm;
