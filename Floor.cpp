@@ -224,19 +224,12 @@ void Floor::genFloorLayout() {
 		check.push_back(rl[i]);
 	}
 
-	stairX = rl[stairRoom]->x + rand() % rl[stairRoom]->getWidth() - left;
-	stairY = rl[stairRoom]->y + rand() % rl[stairRoom]->getHeight() - up;
-
 	sx = rand() % spawn->getWidth() - left;
 	sy = rand() % spawn->getHeight() - up;
-	map[stairY][stairX] = 9;
 
-	/*for (int i = 0; i < monsters.size(); i++) {
-		char c = monsters[i].getName()[0];
-		map[monsters[i].getY()][monsters[i].getX()] = c;
+	if (stairRoom != -1) {
+		stairX = rl[stairRoom]->x + rand() % rl[stairRoom]->getWidth() - left;
+		stairY = rl[stairRoom]->y + rand() % rl[stairRoom]->getHeight() - up;
+		map[stairY][stairX] = 9;
 	}
-	for (int i = 0; i < items.size(); i++) {
-		char c = items[i].getName()[0];
-		map[items[i].getY()][items[i].getX()] = c;
-	}*/
 }
