@@ -169,6 +169,9 @@ void Dungeon::update()
 				gameStates = START_MENU;
 				return;
 			}
+			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_SPACE)) {
+				turnTaken = true;
+			}
 			if (!turnTaken &&!isWalking && input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
 				player.setFacing(NORTH);
 				if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
