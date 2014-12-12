@@ -101,6 +101,8 @@ void Dungeon::initialize(HWND hwnd) {
 
 	pm.initialize(graphics);
 	pm.setCurrentFrame(0, 0);
+	ppm.initialize(graphics);
+	ppm.setCurrentFrame(0, 0);
 	menuBG.initialize(graphics, 1, 1, 1, &textures[6]);
 	gameOver.initialize(graphics,640,480,1,&textures[8]);
 	menuImage.initialize(graphics,640,480,1,&textures[8]);
@@ -186,7 +188,9 @@ void Dungeon::update()
 					player.setEquippedArmor(inventory->getMenuState());
 					break;
 				case 2:	// Health
-					player.setHealth(player.getHealth()+player.getInventory()[inventory->getMenuState()].getValue());
+					int heal = player.getHealth()+player.getInventory()[inventory->getMenuState()].getValue();
+					if (heal > player.getMaxHealth()) heal = player.getMaxHealth();
+					player.setHealth(heal);
 					player.getInventory().erase(player.getInventory().begin() + inventory->getMenuState());
 					break;
 				}
@@ -286,6 +290,7 @@ void Dungeon::update()
 			monsters[a].update(frameTime);
 		}
 		pm.update(frameTime);
+		ppm.update(frameTime);
 		break;	// End case
 
 	case SPLASH_SCREEN:
@@ -369,10 +374,11 @@ void Dungeon::ai()
 				if (gen.getFloor(floor).getMonster(c.first, c.second) == 0)
 					if (player.x == c.first && player.y == c.second) {
 						int damage = gen.getFloor(floor).getMonsters()[i].getAttack() - player.getArmor();
+						if (damage < 0) damage = 0;
 						player.setHealth(player.getHealth() - damage);
-						pm.setCurrentFrame(damage);
+						ppm.setCurrentFrame(damage);
 						audio->playCue("hit");
-						pm.createParticleEffect(VECTOR2(player.getX(), player.getY()), VECTOR2(0,100), 1);
+						ppm.createParticleEffect(VECTOR2(player.getX(), player.getY()), VECTOR2(0,100), 1);
 					} else {
 						if (gen.getFloor(floor).getMonsters()[i].getX() < c.first) {
 							monsters[i].facing = EAST;
@@ -424,7 +430,7 @@ void Dungeon::render()
 	int yoffp = 0;
 
 	if (isWalking && !turnTaken) {
-		player.offset++;
+		player.offset += 2;
 		switch (player.getFacing()) {
 		case NORTH:
 			yoffp += player.offset;
@@ -536,7 +542,7 @@ void Dungeon::render()
 		}
 
 		if (turnTaken && isWalking) {
-			moffset++;
+			moffset += 2;
 			if (moffset == 32) {
 				isWalking = false;
 				turnTaken = false;
@@ -557,6 +563,7 @@ void Dungeon::render()
 		redBar.draw();
 		greenBar.draw();
 		pm.draw();
+		ppm.draw();
 		if(activeMenu) {
 			menuBG.draw();
 			inventory->displayMenu(frameTime,player.getEquippedArmor(),player.getEquippedWeapon());

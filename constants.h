@@ -95,7 +95,7 @@ const RECT COLLISION_BOX_PUCK = {-32, -32, 32, 32};
 const float   COLLISION_RADIUS = 29;
 
 //Particles
-const int MAX_NUMBER_PARTICLES = 10;
+const int MAX_NUMBER_PARTICLES = 20;
 const float MAX_PARTICLE_LIFETIME = 2.0f;
 
 // key mappings
