@@ -1,6 +1,6 @@
  #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/aliens.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png"};
+const std::string images[] = { "img/tiles.png", "img/enemy.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png"};
 const int nTextures = 8;
 
 
@@ -79,15 +79,9 @@ void Dungeon::initialize(HWND hwnd) {
 
 
 	for (int i = 0; i < 100; i++) {
-		monsters[i].initialize(this, 32, 32, 3, &textures[1]);
-		if(i%2){
-			monsters[i].setFrameDelay(2.0f);
-			monsters[i].setFrames(0,2);
-		}
-		else{
-			monsters[i].setFrameDelay(2.0f);
-			monsters[i].setFrames(3,5);
-		}
+		monsters[i].initialize(this, 104, 104, 8, &textures[1]);
+		monsters[i].setScale(64.0f/105.0f);
+		monsters[i].setCurrentFrame(3);
 	}
 	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[3]);
 
