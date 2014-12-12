@@ -20,6 +20,7 @@ class Dungeon;
 #include <cmath>
 #include "Hero.h"
 #include "particleManager.h"
+#include <sstream>
 //=============================================================================
 // This class is the core of the game
 //=============================================================================
@@ -65,6 +66,10 @@ private:
 	ParticleManager pm;
 	Image redBar;
 	Image greenBar;
+	int bodyCount;
+	int hiScore;
+	bool won;
+	bool birmingham;
 
 };
 
