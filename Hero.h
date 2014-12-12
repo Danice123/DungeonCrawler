@@ -1,12 +1,13 @@
 #ifndef __HERO_H_
 #define __HERO_H_
+#include "Room.h"
 
 #include "Entity.h"
 class Hero : public Entity {
 public:
 	Hero();
-	void setFacingRight(bool in){facingRight = in;}
-	bool isFacingRight(){return facingRight;}
+	void setFacing(dir f) { facing = f; }
+	dir getFacing() { return facing; }
 
 	int getMaxHealth() { return maxHealth; }
 	int getHealth() { return health; }
@@ -27,10 +28,11 @@ public:
 
 	int x;
 	int y;
+	int offset;
 private:
 	int maxHealth;
 	int health;
-	bool facingRight;
+	dir facing;
 	
 	std::vector<ItemInstance> inventory;
 	int equippedArmor;

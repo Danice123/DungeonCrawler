@@ -93,7 +93,7 @@ void Dungeon::initialize(HWND hwnd) {
 
 	player.initialize(this, 50, 50, 11, &textures[2]);
 	player.setScale(32.0f/50.0f);
-	player.setFrameDelay(0.1f);
+	player.setFrameDelay(0.05f);
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
@@ -121,6 +121,7 @@ void Dungeon::initialize(HWND hwnd) {
 }
 
 bool turnTaken = false;
+bool isWalking = false;
 //=============================================================================
 // Update all game items
 //=============================================================================
@@ -154,26 +155,22 @@ void Dungeon::update()
 				gameStates = START_MENU;
 				return;
 			}
-			if (input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
+			if (!turnTaken &&!isWalking && input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
 				if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 					audio->playCue("hit");
 					pm.setCurrentFrame(damage);
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1); 
+					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					turnTaken = true;
 				} else {
-					player.y--;
-					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
-						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
-						player.getInventory().push_back(*i);
-						i->isOnGround = false;
-					}
-					if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
+					player.setFacing(NORTH);
+					player.offset = 0;
+					isWalking = true;
 				}
-				turnTaken = true;
 			}
-			if (input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(player.x, player.y + 1) != 0) {
+			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(player.x, player.y + 1) != 0) {
 				if (gen.getFloor(floor).getMonster(player.x, player.y + 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
 					int damage = player.getAttack() - m->getArmor();
@@ -181,21 +178,15 @@ void Dungeon::update()
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					turnTaken = true;
 				} else {
-					player.y++;
-					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
-						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
-						player.getInventory().push_back(*i);
-						i->isOnGround = false;
-					}
-					if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
+					player.setFacing(SOUTH);
+					player.offset = 0;
+					isWalking = true;
 				}
-				turnTaken = true;
 			}
-			if (input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
+			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
 				player.setFrames(0, 10);
-				player.setFacingRight(true);
-				player.flipHorizontal(!player.isFacingRight());
 				if (gen.getFloor(floor).getMonster(player.x + 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
@@ -203,22 +194,15 @@ void Dungeon::update()
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					turnTaken = true;
 				} else {
-					player.x++;
-					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
-						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
-						player.getInventory().push_back(*i);
-						i->isOnGround = false;
-					}
-					if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
+					player.setFacing(EAST);
+					player.offset = 0;
+					isWalking = true;
 				}
-				turnTaken = true;
 			}
-			if (input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
-				player.setFrames(0,10);	
-				player.setFacingRight(false);
-				player.flipHorizontal(!player.isFacingRight());
-
+			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
+				player.setFrames(0,10);
 				if (gen.getFloor(floor).getMonster(player.x - 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
@@ -226,23 +210,20 @@ void Dungeon::update()
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
 					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					turnTaken = true;
 				} else {
-					player.x--;
-					if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
-						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
-						player.getInventory().push_back(*i);
-						i->isOnGround = false;
-					}
-					if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
+					player.setFacing(WEST);
+					player.offset = 0;
+					isWalking = true;
 				}
-				turnTaken = true;
 			}
 		}
 		if (input->wasKeyPressed(VK_ESCAPE)) {
 			activeMenu = !activeMenu;
 		}
-		player.update(frameTime);
 		greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
+		//Updates
+		player.update(frameTime);
 		for(int a = 0; a < gen.getFloor(floor).getMonsters().size(); a++){
 			monsters[a].update(frameTime);
 		}
@@ -291,12 +272,13 @@ void Dungeon::update()
 	}
 }
 
+int moffset = 0;
 //=============================================================================
 // Artificial Intelligence
 //=============================================================================
 void Dungeon::ai()
 {
-	if (turnTaken) {
+	if (turnTaken && !isWalking) {
 		for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
 			if (gen.getFloor(floor).getMonsters()[i].getCurrentHealth() <= 0) continue;
 			int mx = gen.getFloor(floor).getMonsters()[i].getX();
@@ -311,11 +293,18 @@ void Dungeon::ai()
 						int damage = gen.getFloor(floor).getMonsters()[i].getAttack() - player.getArmor();
 						player.setHealth(player.getHealth() - damage);
 					} else {
+						if (gen.getFloor(floor).getMonsters()[i].getX() < c.first) monsters[i].facing = EAST;
+						if (gen.getFloor(floor).getMonsters()[i].getX() > c.first) monsters[i].facing = WEST;
+						if (gen.getFloor(floor).getMonsters()[i].getY() > c.second) monsters[i].facing = NORTH;
+						if (gen.getFloor(floor).getMonsters()[i].getY() < c.second) monsters[i].facing = SOUTH;
 						gen.getFloor(floor).getMonsters()[i].setCoords(c.first, c.second);
+						monsters[i].isWalking = true;
 					}
 			}
 		}
-		turnTaken = false;
+		moffset = 0;
+		isWalking = true;
+		//turnTaken = false;
 	}
 }
 
@@ -335,6 +324,78 @@ void Dungeon::render()
 	graphics->spriteBegin();
 	int xoffset = player.x - GAME_WIDTH / 64;
 	int yoffset = player.y - GAME_HEIGHT / 64;
+	int xoffp = 0;
+	int yoffp = 0;
+
+	if (isWalking && !turnTaken) {
+		player.offset++;
+		switch (player.getFacing()) {
+		case NORTH:
+			yoffp += player.offset;
+			if (player.offset == 32) {
+				player.y--;
+				isWalking = false;
+				if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+				if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
+				player.setCurrentFrame(3);
+				player.setFrames(3, 3);
+				turnTaken = true;
+			}
+			break;
+		case SOUTH:
+			yoffp -= player.offset;
+			if (player.offset == 32) {
+				player.y++;
+				isWalking = false;
+				if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+				if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
+				player.setCurrentFrame(3);
+				player.setFrames(3, 3);
+				turnTaken = true;
+			}
+			break;
+		case EAST:
+			xoffp -= player.offset;
+			if (player.offset == 32) {
+				player.x++;
+				isWalking = false;
+				if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+				if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
+				player.setCurrentFrame(3);
+				player.setFrames(3, 3);
+				turnTaken = true;
+			}
+			break;
+		case WEST:
+			xoffp += player.offset;
+			if (player.offset == 32) {
+				player.x--;
+				isWalking = false;
+				if (gen.getFloor(floor).getItem(player.x, player.y) != 0) {
+						ItemInstance* i = gen.getFloor(floor).getItem(player.x, player.y);
+						player.getInventory().push_back(*i);
+						i->isOnGround = false;
+					}
+				if (gen.getFloor(floor).getTile(player.x, player.y) == 9) loadFloor(floor + 1);
+				player.setCurrentFrame(3);
+				player.setFrames(3, 3);
+				turnTaken = true;
+			}
+			break;
+		}
+	}
 
 	switch(gameStates) {
 	case LEVEL1:
@@ -345,22 +406,54 @@ void Dungeon::render()
 
 		for (int i = 0; i < gen.getFloor(floor).getHeight(); i++)
 			for (int j = 0; j < gen.getFloor(floor).getWidth(); j++) {
-				mapImg[i][j].setX((j - xoffset) * 32);
-				mapImg[i][j].setY((i - yoffset) * 32);
+				mapImg[i][j].setX((j - xoffset) * 32 + xoffp);
+				mapImg[i][j].setY((i - yoffset) * 32 + yoffp);
 				mapImg[i][j].draw();
 			}
 
 		for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
 			if (gen.getFloor(floor).getMonsters()[i].getCurrentHealth() <= 0) continue;
-			monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32);
-			monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32);
+			if (turnTaken && isWalking && monsters[i].isWalking) {
+				switch (monsters[i].facing) {
+				case NORTH:
+					monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32 + xoffp);
+					monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32 + yoffp + (32 - moffset));
+					break;
+				case SOUTH:
+					monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32 + xoffp);
+					monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32 + yoffp - (32 - moffset));
+					break;
+				case EAST:
+					monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32 + xoffp - (32 - moffset));
+					monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32 + yoffp);
+					break;
+				case WEST:
+					monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32 + xoffp + (32 - moffset));
+					monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32 + yoffp);
+					break;
+				}
+			} else {
+				monsters[i].setX((gen.getFloor(floor).getMonsters()[i].getX() - xoffset) * 32 + xoffp);
+				monsters[i].setY((gen.getFloor(floor).getMonsters()[i].getY() - yoffset) * 32 + yoffp);
+			}
 			monsters[i].draw();
+		}
+
+		if (turnTaken && isWalking) {
+			moffset++;
+			if (moffset == 32) {
+				isWalking = false;
+				turnTaken = false;
+				for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
+					monsters[i].isWalking = false;
+				}
+			}
 		}
 
 		for (int i = 0; i < gen.getFloor(floor).getItems().size(); i++) {
 			if (!gen.getFloor(floor).getItems()[i].isOnGround) continue;
-			items[i].setX((gen.getFloor(floor).getItems()[i].getX() - xoffset) * 32);
-			items[i].setY((gen.getFloor(floor).getItems()[i].getY() - yoffset) * 32);
+			items[i].setX((gen.getFloor(floor).getItems()[i].getX() - xoffset) * 32 + xoffp);
+			items[i].setY((gen.getFloor(floor).getItems()[i].getY() - yoffset) * 32 + yoffp);
 			items[i].draw();
 		}
 
