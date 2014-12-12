@@ -129,7 +129,7 @@ enum GameStates {SPLASH_SCREEN, START_MENU, LEVEL1, LEVEL2, LEVEL3, LEVEL4, LEVE
 
 // Menu Constants
 const int MENU_OFFSET = 125;
-enum menuStates { NEW_GAME = 1, EXIT_GAME = 2
+enum menuStates { NEW_GAME = 1, BIRMINGHAM, EXIT_GAME
 };
 
 #endif
