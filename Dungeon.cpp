@@ -297,6 +297,8 @@ void Dungeon::update()
 		switch(mainMenu->getMenuState()) {
 		case NEW_GAME:
 			{
+			pm.setInvisibleAllParticles();
+			ppm.setInvisibleAllParticles();
 			srand(time(0));
 			gen.generateRandom(5);
 			int maxHeight = 0;

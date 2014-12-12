@@ -32,7 +32,7 @@ void Room::initializeRandom(std::vector<Monster>& tempM, std::vector<Items>& tem
 	int nItems = rand() % maxItems;
 	std::vector<Items> wal;
 	std::vector<Items> ol;
-	for (int i = 0; i < tempI.size(); i++) {
+	for (int i = 1; i < tempI.size(); i++) {
 		if (tempI[i].getType() == 2) {
 			if (tempI[i].getScale() <= level) ol.push_back(tempI[i]);
 		} else if (tempI[i].getScale() <= level) wal.push_back(tempI[i]);
