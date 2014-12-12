@@ -1,7 +1,7 @@
  #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/enemy_ss.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png", "img/han.jpg" };
-const int nTextures = 9;
+const std::string images[] = { "img/tiles.png", "img/enemy_ss.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png", "img/menu.png", "img/gameOver.png" };
+const int nTextures = 10;
 
 
 
@@ -83,6 +83,8 @@ void Dungeon::initialize(HWND hwnd) {
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 	}
 
+	graphics->setBackColor(graphicsNS::BLACK);
+
 	redBar.initialize(graphics, 0, 0, 0, &textures[4]);
 	redBar.setX(0);
 	redBar.setY(GAME_HEIGHT - 20);
@@ -101,6 +103,7 @@ void Dungeon::initialize(HWND hwnd) {
 	pm.setCurrentFrame(0, 0);
 	menuBG.initialize(graphics, 1, 1, 1, &textures[6]);
 	gameOver.initialize(graphics,640,480,1,&textures[8]);
+	menuImage.initialize(graphics,640,480,1,&textures[8]);
 
 
 	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 32, 32, 4, &textures[1]);
@@ -138,11 +141,11 @@ void Dungeon::initialize(HWND hwnd) {
 	bigText = new TextDX();
 	if(bigText->initialize(graphics, 50, true, false, "Calibri") == false)
         throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing menuItem font"));
-	bigText->setFontColor(graphicsNS::BLACK);
+	bigText->setFontColor(graphicsNS::WHITE);
 	text = new TextDX();
 	if(text->initialize(graphics, 20, true, false, "Calibri") == false)
         throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing menuItem font"));
-	text->setFontColor(graphicsNS::BLACK);
+	text->setFontColor(graphicsNS::WHITE);
 
 	bodyCount = 0;
 	hiScore = 0;
@@ -272,7 +275,8 @@ void Dungeon::update()
 				}
 			}
 		}
-		if (input->wasKeyPressed(VK_ESCAPE)) {
+		if (input->getCharIn() == 'i') {
+			input->clearCharIn();
 			activeMenu = !activeMenu;
 		}
 		greenBar.setScaleX((player.getHealth() / (float)player.getMaxHealth()) * 200);
@@ -563,7 +567,10 @@ void Dungeon::render()
 		break;
 
 	case START_MENU:
+		menuImage.draw();
 		mainMenu->displayMenu(frameTime);
+		text->print("Controls: Arrow Keys to move, 'i' to open inventory, Enter to select item", 20, 450);
+
 		break;
 	case GAME_OVER:
 		gameOver.draw();

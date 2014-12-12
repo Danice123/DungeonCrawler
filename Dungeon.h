@@ -61,6 +61,7 @@ private:
 	bool activeMenu;
 	Image menuBG;
 	Image gameOver;
+	Image menuImage;
 	GameStates gameStates;
 	float timeInState;
 	ParticleManager pm;
