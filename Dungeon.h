@@ -43,7 +43,8 @@ public:
 	void gameStateUpdate();
 private:
 	TextureManager* textures;
-	TextDX text;
+	TextDX* text;
+	TextDX* bigText;
 	bool keyDownLastFrame;
 	DungeonGen gen;
 	void loadFloor(int);

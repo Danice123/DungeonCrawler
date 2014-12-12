@@ -113,6 +113,15 @@ void Dungeon::initialize(HWND hwnd) {
 	mainMenu->setMenuItems(menuItems);
 	timeInState = 0;
 	audio->playCue("themeMusic");
+
+	bigText = new TextDX();
+	if(bigText->initialize(graphics, 50, true, false, "Calibri") == false)
+        throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing menuItem font"));
+	bigText->setFontColor(graphicsNS::BLACK);
+	text = new TextDX();
+	if(text->initialize(graphics, 20, true, false, "Calibri") == false)
+        throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing menuItem font"));
+	text->setFontColor(graphicsNS::BLACK);
 	
 }
 
@@ -482,6 +491,7 @@ void Dungeon::render()
 		break;
 	case GAME_OVER:
 		gameOver.draw();
+		bigText->print("Game Over",400,200);
 		break;
 	}
 	graphics->spriteEnd();
