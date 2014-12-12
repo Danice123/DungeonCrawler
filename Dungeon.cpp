@@ -181,7 +181,7 @@ void Dungeon::update()
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 					audio->playCue("hit");
 					pm.setCurrentFrame(damage);
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					pm.createParticleEffect(VECTOR2(player.getX(), player.getY()-32), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
 					player.setFacing(NORTH);
@@ -196,7 +196,7 @@ void Dungeon::update()
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					pm.createParticleEffect(VECTOR2(player.getX(), player.getY()+32), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
 					player.setFacing(SOUTH);
@@ -206,32 +206,42 @@ void Dungeon::update()
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
 				player.setFrames(0, 10);
+				if(player.getFacing() == WEST){
+					player.flipHorizontal(true);
+				}
+				player.setFacing(EAST);
+
 				if (gen.getFloor(floor).getMonster(player.x + 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					pm.createParticleEffect(VECTOR2(player.getX()+32, player.getY()), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
-					player.setFacing(EAST);
 					player.offset = 0;
 					isWalking = true;
 				}
+				
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
 				player.setFrames(0,10);
+				if(player.getFacing()== EAST){
+					player.flipHorizontal(true);
+				}
+				player.setFacing(WEST);
+
 				if (gen.getFloor(floor).getMonster(player.x - 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
 					m->setCurrentHealth(m->getCurrentHealth() - damage);
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					pm.createParticleEffect(VECTOR2(player.getX()-32, player.getY()), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
-					player.setFacing(WEST);
+					
 					player.offset = 0;
 					isWalking = true;
 				}
