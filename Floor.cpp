@@ -106,8 +106,8 @@ void Floor::genFloorLayout() {
 
 	int left = -1;
 	int up = -1;
-	int right = spawn->getWidth();
-	int down = spawn->getHeight();
+	int right = spawn->getWidth() + 1;
+	int down = spawn->getHeight() + 1;
 
 	do {
 		Room* r = rl[index];
