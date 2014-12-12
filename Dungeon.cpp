@@ -1,6 +1,6 @@
  #include "Dungeon.h"
 
-const std::string images[] = { "img/tiles.png", "img/enemy.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png", "img/han.jpg" };
+const std::string images[] = { "img/tiles.png", "img/enemy_ss.png", "img/hero_sprite_sheet.png", "img/chest.png", "img/red.png", "img/green.png", "img/menuBG - Nathan Snyder.png", "img/health_potion.png", "img/han.jpg" };
 const int nTextures = 9;
 
 
@@ -24,6 +24,7 @@ void Dungeon::loadFloor(int floor) {
 	if (floor == 5) {
 		floor = 0;
 		gen.loadFromFile("Boss.txt");
+		gen.getFloor(0).setNoStairs();
 		for (int i = 0; i < gen.getAmountFloors(); i++) gen.getFloor(i).genFloorLayout();
 		gameStates = LEVEL5;
 	}
@@ -47,7 +48,23 @@ void Dungeon::loadFloor(int floor) {
 			}
 
 	for (int i = 0; i < gen.getFloor(floor).getMonsters().size(); i++) {
-
+		std::string name = gen.getFloor(floor).getMonsters()[i].getName();
+		if (!name.compare("Bat")) {
+			monsters[i].setFrames(16, 19);
+			monsters[i].setFrameDelay(0.1f);
+		}
+		if (!name.compare("Spider")) {
+			monsters[i].setFrames(0, 3);
+			monsters[i].setFrameDelay(0.1f);
+		}
+		if (!name.compare("Nazi")) {
+			monsters[i].setFrames(20, 20);
+			monsters[i].setCurrentFrame(20);
+		}
+		if (!name.compare("Hitler")) {
+			monsters[i].setFrames(24, 24);
+			monsters[i].setCurrentFrame(24);
+		}
 	}
 
 	player.x = gen.getFloor(floor).sx;
@@ -86,12 +103,7 @@ void Dungeon::initialize(HWND hwnd) {
 	gameOver.initialize(graphics,640,480,1,&textures[8]);
 
 
-	for (int i = 0; i < 100; i++) 
-	{
-		monsters[i].initialize(this, 104, 104, 8, &textures[1]);
-		monsters[i].setScale(64.0f/105.0f);
-		monsters[i].setCurrentFrame(3);
-	}
+	for (int i = 0; i < 100; i++) monsters[i].initialize(this, 32, 32, 4, &textures[1]);
 	for (int i = 0; i < 100; i++) items[i].initialize(this, 0, 0, 0, &textures[3]);
 
 	player.initialize(this, 50, 50, 11, &textures[2]);
@@ -100,6 +112,7 @@ void Dungeon::initialize(HWND hwnd) {
 	player.setCurrentFrame(3);
 	player.setX(GAME_WIDTH / 2);
 	player.setY(GAME_HEIGHT / 2 - 16);
+	player.setFacing(EAST);
 
 	activeMenu = false;
 	inventory = new Menu();
@@ -185,6 +198,7 @@ void Dungeon::update()
 				turnTaken = true;
 			}
 			if (!turnTaken &&!isWalking && input->wasKeyPressed(VK_UP) && gen.getFloor(floor).getTile(player.x, player.y - 1) != 0) {
+				player.setFacing(NORTH);
 				if (gen.getFloor(floor).getMonster(player.x, player.y - 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y - 1);
 					int damage = player.getAttack() - m->getArmor();
@@ -192,15 +206,15 @@ void Dungeon::update()
 					if(m->getCurrentHealth() == 0) bodyCount++;	// Let the bodies hit the floor
 					audio->playCue("hit");
 					pm.setCurrentFrame(damage);
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					pm.createParticleEffect(VECTOR2(player.getX(), player.getY()-32), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
-					player.setFacing(NORTH);
 					player.offset = 0;
 					isWalking = true;
 				}
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_DOWN) && gen.getFloor(floor).getTile(player.x, player.y + 1) != 0) {
+				player.setFacing(SOUTH);
 				if (gen.getFloor(floor).getMonster(player.x, player.y + 1) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x, player.y + 1);
 					int damage = player.getAttack() - m->getArmor();
@@ -208,16 +222,19 @@ void Dungeon::update()
 					if(m->getCurrentHealth() == 0) bodyCount++;
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					pm.createParticleEffect(VECTOR2(player.getX(), player.getY()+32), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
-					player.setFacing(SOUTH);
 					player.offset = 0;
 					isWalking = true;
 				}
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_RIGHT) && gen.getFloor(floor).getTile(player.x + 1, player.y) != 0) {
 				player.setFrames(0, 10);
+				if(player.getFacing() != EAST){
+					player.flipHorizontal(false);
+				}
+				player.setFacing(EAST);
 				if (gen.getFloor(floor).getMonster(player.x + 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x + 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
@@ -225,16 +242,19 @@ void Dungeon::update()
 					if(m->getCurrentHealth() == 0) bodyCount++;
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					pm.createParticleEffect(VECTOR2(player.getX()+32, player.getY()), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
-					player.setFacing(EAST);
 					player.offset = 0;
 					isWalking = true;
 				}
 			}
 			if (!turnTaken && !isWalking && input->wasKeyPressed(VK_LEFT) && gen.getFloor(floor).getTile(player.x - 1, player.y) != 0) {
 				player.setFrames(0,10);
+				if(player.getFacing()!= WEST){
+					player.flipHorizontal(true);
+				}
+				player.setFacing(WEST);
 				if (gen.getFloor(floor).getMonster(player.x - 1, player.y) != 0) {
 					MonsterInstance* m = gen.getFloor(floor).getMonster(player.x - 1, player.y);
 					int damage = player.getAttack() - m->getArmor();
@@ -242,10 +262,9 @@ void Dungeon::update()
 					if(m->getCurrentHealth() == 0) bodyCount++;
 					pm.setCurrentFrame(damage);
 					audio->playCue("hit");
-					pm.createParticleEffect(VECTOR2(player.getCenterX(), player.getCenterY()), VECTOR2(0,-100), 1);
+					pm.createParticleEffect(VECTOR2(player.getX()-32, player.getY()), VECTOR2(0,-100), 1);
 					turnTaken = true;
 				} else {
-					player.setFacing(WEST);
 					player.offset = 0;
 					isWalking = true;
 				}
@@ -349,10 +368,26 @@ void Dungeon::ai()
 						audio->playCue("hit");
 						pm.createParticleEffect(VECTOR2(player.getX(), player.getY()), VECTOR2(0,100), 1);
 					} else {
-						if (gen.getFloor(floor).getMonsters()[i].getX() < c.first) monsters[i].facing = EAST;
-						if (gen.getFloor(floor).getMonsters()[i].getX() > c.first) monsters[i].facing = WEST;
-						if (gen.getFloor(floor).getMonsters()[i].getY() > c.second) monsters[i].facing = NORTH;
-						if (gen.getFloor(floor).getMonsters()[i].getY() < c.second) monsters[i].facing = SOUTH;
+						if (gen.getFloor(floor).getMonsters()[i].getX() < c.first) {
+							monsters[i].facing = EAST;
+							if (!gen.getFloor(floor).getMonsters()[i].getName().compare("Nazi")) monsters[i].setCurrentFrame(21);
+							if (!gen.getFloor(floor).getMonsters()[i].getName().compare("Hitler")) monsters[i].setCurrentFrame(25);
+						}
+						if (gen.getFloor(floor).getMonsters()[i].getX() > c.first){
+							monsters[i].facing = WEST;
+							if (!gen.getFloor(floor).getMonsters()[i].getName().compare("Nazi")) monsters[i].setCurrentFrame(22);
+							if (!gen.getFloor(floor).getMonsters()[i].getName().compare("Hitler")) monsters[i].setCurrentFrame(26);
+						}
+						if (gen.getFloor(floor).getMonsters()[i].getY() > c.second){
+							monsters[i].facing = NORTH;
+							if (!gen.getFloor(floor).getMonsters()[i].getName().compare("Nazi")) monsters[i].setCurrentFrame(23);
+							if (!gen.getFloor(floor).getMonsters()[i].getName().compare("Hitler")) monsters[i].setCurrentFrame(27);
+						}
+						if (gen.getFloor(floor).getMonsters()[i].getY() < c.second){
+							monsters[i].facing = SOUTH;
+							if (!gen.getFloor(floor).getMonsters()[i].getName().compare("Nazi")) monsters[i].setCurrentFrame(20);
+							if (!gen.getFloor(floor).getMonsters()[i].getName().compare("Hitler")) monsters[i].setCurrentFrame(24);
+						}
 						gen.getFloor(floor).getMonsters()[i].setCoords(c.first, c.second);
 						monsters[i].isWalking = true;
 					}

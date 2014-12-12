@@ -9,7 +9,7 @@ void Floor::initializeRandom(int level, std::vector<Monster>& tempM, std::vector
 	std::queue<Room*> rl;
 	int mRooms = rand() % 10 + 10;
 	int nRooms = 1;
-	stairRoom = 0; //rand() % mRooms;
+	stairRoom = rand() % mRooms;
 	spawn = new Room();
 	spawn->initializeRandom(tempM, tempI, 1);
 	rl.push(spawn);
