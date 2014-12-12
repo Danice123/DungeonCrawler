@@ -41,6 +41,8 @@ public:
 		return 0;
 	}
 
+	void setNoStairs() { stairRoom = -1; }
+
 	int sx, sy;
 private:
 	bool initialized;
