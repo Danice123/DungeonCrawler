@@ -32,7 +32,7 @@ void Menu::initialize(Graphics *g, Input *i, Menu* p)
 	opacity = 255;
 	highlightColor = graphicsNS::RED;
 	normalColor = graphicsNS::WHITE;
-	menuAnchor = D3DXVECTOR2(270,10);
+	menuAnchor = D3DXVECTOR2(270,250);
 	input = i;
 	verticalOffset = 30;
 	linePtr = 0;
@@ -130,7 +130,7 @@ void Menu::update()
 		menuState=-1;
 		if (input->wasKeyPressed(VK_UP))
 		{
-			if(menuAnchor != D3DXVECTOR2(270,10)) {
+			if(menuAnchor != D3DXVECTOR2(270,250)) {
 				shift += verticalOffset;
 			}
 			linePtr--;
@@ -143,13 +143,13 @@ void Menu::update()
 
 		if (linePtr > (int)(menuItems.size()-1)) {
 			linePtr = 0;
-			menuAnchor = D3DXVECTOR2(270,10);
+			menuAnchor = D3DXVECTOR2(270,250);
 			shift = 0;
 		}
 		if (linePtr < 0) {
 			linePtr = menuItems.size()-1;
 			if(menuItems.size()>0)
-				menuAnchor = D3DXVECTOR2(270,10+(-verticalOffset*linePtr));
+				menuAnchor = D3DXVECTOR2(270,250+(-verticalOffset*linePtr));
 		}
 
 		if (input->wasKeyPressed(VK_RETURN)) {
