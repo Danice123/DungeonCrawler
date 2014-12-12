@@ -197,6 +197,7 @@ void Dungeon::update()
 			}
 		} else {
 			if (player.getHealth() <= 0) { //Death
+				audio->playCue(DEATH);
 				gameStates = GAME_OVER;
 				won = false;
 				return;

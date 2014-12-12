@@ -120,6 +120,7 @@ const char PUNCH[] = "punch_hit";
 const char SWORD[] = "sword_hit";
 const char MUSIC[] = "audio/themeMusic";
 const char HIT[] = "audio/hit";
+const char DEATH[] = "death";
 
 // Pattern Step Action
 enum PATTERN_STEP_ACTION {NONE, UP, DOWN, LEFT, RIGHT, TRACK, EVADE, UPLEFT};

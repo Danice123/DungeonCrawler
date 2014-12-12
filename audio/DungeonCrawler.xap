@@ -16,8 +16,8 @@ Global Settings
     Header File = stick_fight.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 3323134101;
-    Last Modified High = 30414214;
+    Last Modified Low = 953283285;
+    Last Modified High = 30414298;
 
     Category
     {
@@ -227,10 +227,10 @@ Wave Bank
     Compression Preset Name = <none>;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 2170868719;
-    PC Bank Last Modified High = 30414231;
-    Bank Last Revised Low = 2170848720;
-    Bank Last Revised High = 30414231;
+    PC Bank Last Modified Low = 953473402;
+    PC Bank Last Modified High = 30414298;
+    Bank Last Revised Low = 792613003;
+    Bank Last Revised High = 30414298;
 
     Wave
     {
@@ -250,8 +250,8 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 2051761755;
-            Last Modified High = 30414231;
+            Last Modified Low = 2327245379;
+            Last Modified High = 30414267;
         }
     }
 
@@ -273,8 +273,31 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 3968257209;
-            Last Modified High = 30414216;
+            Last Modified Low = 2305188265;
+            Last Modified High = 30414267;
+        }
+    }
+
+    Wave
+    {
+        Name = scream - Nathan Snyder;
+        File = scream - Nathan Snyder.wav;
+        Build Settings Last Modified Low = 609069186;
+        Build Settings Last Modified High = 30414298;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 11025;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 58600;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 254509930;
+            Last Modified High = 30414298;
         }
     }
 }
@@ -286,8 +309,8 @@ Sound Bank
     Windows File = Win\DungeonCrawlerSound.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 2724346296;
-    Bank Last Modified High = 30414216;
+    Bank Last Modified Low = 959897799;
+    Bank Last Modified High = 30414298;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -385,6 +408,53 @@ Sound Bank
         }
     }
 
+    Sound
+    {
+        Name = scream - Nathan Snyder;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = DungeonCrawlerBank;
+                    Bank Index = 0;
+                    Entry Name = scream - Nathan Snyder;
+                    Entry Index = 2;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
     Cue
     {
         Name = themeMusic;
@@ -420,6 +490,26 @@ Sound Bank
         {
             Name = hit;
             Index = 1;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = death;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = scream - Nathan Snyder;
+            Index = 2;
             Weight Min = 0;
             Weight Max = 255;
         }
