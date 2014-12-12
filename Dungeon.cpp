@@ -78,7 +78,8 @@ void Dungeon::initialize(HWND hwnd) {
 	menuBG.initialize(graphics, 1, 1, 10, &textures[6]);
 
 
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 100; i++) 
+	{
 		monsters[i].initialize(this, 104, 104, 8, &textures[1]);
 		monsters[i].setScale(64.0f/105.0f);
 		monsters[i].setCurrentFrame(3);
